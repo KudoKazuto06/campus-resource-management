@@ -1,4 +1,4 @@
-package com.project_demo.studentservice;
+package com.campus_resource_management.studentservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
