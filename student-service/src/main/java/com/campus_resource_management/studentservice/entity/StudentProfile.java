@@ -1,9 +1,11 @@
 package com.campus_resource_management.studentservice.entity;
 
 import com.campus_resource_management.studentservice.constant.DegreeType;
+import com.campus_resource_management.studentservice.constant.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +32,13 @@ public class StudentProfile extends BaseEntity {
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false)
+    private Gender gender;
+
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;

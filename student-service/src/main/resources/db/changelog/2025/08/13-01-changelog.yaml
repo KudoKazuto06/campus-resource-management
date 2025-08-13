@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1755008131619-1
+      id: 1755065433929-1
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -47,6 +47,16 @@ databaseChangeLog:
               - column:
                   constraints:
                     nullable: false
+                  name: gender
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: date_of_birth
+                  type: DATE
+              - column:
+                  constraints:
+                    nullable: false
                   name: email
                   type: VARCHAR(255)
               - column:
@@ -89,7 +99,7 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: student_profiles
   - changeSet:
-      id: 1755008131619-2
+      id: 1755065433929-2
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -98,7 +108,7 @@ databaseChangeLog:
             constraintName: uc_student_profiles_email
             tableName: student_profiles
   - changeSet:
-      id: 1755008131619-3
+      id: 1755065433929-3
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -107,7 +117,7 @@ databaseChangeLog:
             constraintName: uc_student_profiles_identity
             tableName: student_profiles
   - changeSet:
-      id: 1755008131619-4
+      id: 1755065433929-4
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
