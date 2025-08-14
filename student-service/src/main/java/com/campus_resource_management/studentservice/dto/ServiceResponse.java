@@ -1,5 +1,6 @@
 package com.campus_resource_management.studentservice.dto;
 
+import com.campus_resource_management.studentservice.constant.StatusResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 public class ServiceResponse<T> {
 
     private String message;
-    private String status;
+    private StatusResponse status;
     private T data;
     private int statusCode;
     private Object errorMessages;

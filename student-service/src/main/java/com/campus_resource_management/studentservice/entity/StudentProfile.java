@@ -46,7 +46,7 @@ public class StudentProfile extends BaseEntity {
     @Column(name = "school_email", nullable = false, unique = true)
     private String schoolEmail;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "phone_number", nullable = false)
@@ -66,13 +66,13 @@ public class StudentProfile extends BaseEntity {
     private Integer creditsCompleted = 0;
 
     @Column(name = "year_of_study")
-    private Integer yearOfStudy;
+    private Integer yearOfStudy = 1;
 
     @Column(name = "student_note")
     private String studentNote;
 
     @Column(name = "is_deleted")
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     // @OneToMany(mappedBy = "student_profile", cascade = CascadeType.ALL, orphanRemoval = true)
     // private List<Course> courses = new ArrayList<>();

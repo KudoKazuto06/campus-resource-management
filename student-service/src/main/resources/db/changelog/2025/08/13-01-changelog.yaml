@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1755065433929-1
+      id: 1755103900178-1
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -65,6 +65,8 @@ databaseChangeLog:
                   name: school_email
                   type: VARCHAR(255)
               - column:
+                  constraints:
+                    nullable: false
                   name: address
                   type: VARCHAR(255)
               - column:
@@ -99,7 +101,7 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: student_profiles
   - changeSet:
-      id: 1755065433929-2
+      id: 1755103900178-2
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -108,7 +110,7 @@ databaseChangeLog:
             constraintName: uc_student_profiles_email
             tableName: student_profiles
   - changeSet:
-      id: 1755065433929-3
+      id: 1755103900178-3
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -117,7 +119,7 @@ databaseChangeLog:
             constraintName: uc_student_profiles_identity
             tableName: student_profiles
   - changeSet:
-      id: 1755065433929-4
+      id: 1755103900178-4
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
