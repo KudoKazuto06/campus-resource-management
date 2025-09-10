@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   student-service:
     container_name: student_service_app

@@ -2,8 +2,11 @@ package com.campus_resource_management.studentservice.entity;
 
 import com.campus_resource_management.studentservice.constant.DegreeType;
 import com.campus_resource_management.studentservice.constant.Gender;
+import com.campus_resource_management.studentservice.constant.StudentStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +23,8 @@ import java.util.UUID;
 public class StudentProfile extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    @JdbcTypeCode(SqlTypes.UUID)
     @Column(name = "student_id")
     private UUID id;
 
@@ -62,15 +66,22 @@ public class StudentProfile extends BaseEntity {
     @Column(name = "gpa")
     private Double gpa;
 
+    @Builder.Default
     @Column(name = "credits_completed")
     private Integer creditsCompleted = 0;
 
+    @Builder.Default
+    @Column(name = "student_status")
+    private StudentStatus studentStatus = StudentStatus.ACTIVE;
+
+    @Builder.Default
     @Column(name = "year_of_study")
     private Integer yearOfStudy = 1;
 
     @Column(name = "student_note")
     private String studentNote;
 
+    @Builder.Default
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
 

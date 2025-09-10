@@ -2,7 +2,8 @@ package com.campus_resource_management.studentservice.controller;
 
 import com.campus_resource_management.studentservice.dto.ServiceResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.request.AddStudentProfileRequest;
-import com.campus_resource_management.studentservice.entity.StudentProfile;
+import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
+import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import com.campus_resource_management.studentservice.service.StudentProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class StudentProfileController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ServiceResponse<StudentProfile> addStudentProfile(@RequestBody @Valid AddStudentProfileRequest  addStudentProfileRequest) {
+    public ServiceResponse<SummaryStudentProfileResponse> addStudentProfile(@RequestBody @Valid AddStudentProfileRequest  addStudentProfileRequest) {
         return studentProfileService.addStudentProfile(addStudentProfileRequest);
     }
 

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1756402427483-1
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: student_status
+                  type: SMALLINT
+            tableName: student_profiles
+

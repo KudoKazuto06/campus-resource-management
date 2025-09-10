@@ -2,10 +2,11 @@ package com.campus_resource_management.studentservice.service;
 
 import com.campus_resource_management.studentservice.dto.ServiceResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.request.AddStudentProfileRequest;
-import com.campus_resource_management.studentservice.entity.StudentProfile;
+import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
+import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 
 public interface StudentProfileService {
 
-    ServiceResponse<StudentProfile> addStudentProfile(AddStudentProfileRequest addStudentProfileRequest);
+    ServiceResponse<SummaryStudentProfileResponse> addStudentProfile(AddStudentProfileRequest addStudentProfileRequest);
 
 }
