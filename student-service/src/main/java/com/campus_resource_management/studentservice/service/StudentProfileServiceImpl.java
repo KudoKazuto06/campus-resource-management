@@ -1,13 +1,17 @@
 package com.campus_resource_management.studentservice.service;
 
 import com.campus_resource_management.studentservice.constant.*;
+import com.campus_resource_management.studentservice.dto.PaginationResponse;
 import com.campus_resource_management.studentservice.dto.ServiceResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.request.AddStudentProfileRequest;
+import com.campus_resource_management.studentservice.dto.student_profile.request.FilterStudentProfileRequest;
+import com.campus_resource_management.studentservice.dto.student_profile.request.UpdateStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import com.campus_resource_management.studentservice.entity.StudentProfile;
 import com.campus_resource_management.studentservice.mapper.StudentProfileMapper;
 import com.campus_resource_management.studentservice.repository.StudentProfileRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +23,8 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     private final StudentProfileMapper studentProfileMapper;
 
     @Override
-    public ServiceResponse<SummaryStudentProfileResponse> addStudentProfile(AddStudentProfileRequest addStudentProfileRequest) {
+    public ServiceResponse<SummaryStudentProfileResponse>
+    addStudentProfile(AddStudentProfileRequest addStudentProfileRequest) {
 
         // 1. Create new entity and map fields from request
         StudentProfile studentProfile = new StudentProfile();
@@ -49,7 +54,38 @@ public class StudentProfileServiceImpl implements StudentProfileService {
                 .build();
     }
 
+    @Override
+    public ServiceResponse<SummaryStudentProfileResponse>
+    updateStudentProfile(UpdateStudentProfileRequest updateStudentProfileRequest) {
+        return null;
+    }
 
+    @Override
+    public ServiceResponse<PaginationResponse>
+    viewFilteredStudentProfile(FilterStudentProfileRequest filterStudentProfileRequest){
+        return null;
+    }
+
+    @Override
+    public ServiceResponse<DetailedStudentProfileResponse>
+    viewDetailedStudentProfileByIdentityId(String identityId) {
+        return null;
+    }
+
+    @Override
+    public ServiceResponse<Void>
+    deleteStudentProfileByIdentityId(String identityId) {
+        return null;
+    }
+
+    @Override
+    public ServiceResponse<Void>
+    restoreStudentProfile(String identityId) {
+        return null;
+    }
+
+
+    // ------------------------------------------------------------------------------------------------ //
 
     public String generateUniqueSchoolEmail(String firstName, String lastName){
         String baseEmail =
