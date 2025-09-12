@@ -12,7 +12,6 @@ import com.campus_resource_management.studentservice.entity.StudentProfile;
 import com.campus_resource_management.studentservice.exception.StudentProfileNotFoundException;
 import com.campus_resource_management.studentservice.mapper.StudentProfileMapper;
 import com.campus_resource_management.studentservice.repository.StudentProfileRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +19,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StudentProfileServiceImpl implements StudentProfileService {
 
-    private final StudentProfileRepository profileRepository;
     private final StudentProfileMapper studentProfileMapper;
+    private final StudentProfileRepository studentProfileRepository;
 
     @Override
     public ServiceResponse<SummaryStudentProfileResponse>
@@ -41,7 +40,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         studentProfile.setCreatedBy("SYSTEM");
 
         // 3. Save entity
-        StudentProfile savedStudentProfile = profileRepository.save(studentProfile);
+        StudentProfile savedStudentProfile = studentProfileRepository.save(studentProfile);
 
         // 4. Map saved entity to response DTO
         SummaryStudentProfileResponse summaryStudentProfileResponse = studentProfileMapper.toSummaryResponse(savedStudentProfile);
@@ -60,14 +59,14 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     updateStudentProfile(UpdateStudentProfileRequest updateStudentProfileRequest) {
 
         // 1. Find existing profile
-        StudentProfile existingProfile = profileRepository.findByIdentityId(updateStudentProfileRequest.getIdentityId())
+        StudentProfile existingProfile = studentProfileRepository.findByIdentityId(updateStudentProfileRequest.getIdentityId())
                 .orElseThrow(() -> new StudentProfileNotFoundException(updateStudentProfileRequest.getIdentityId()));
 
         // 2. Map fields from request to entity (only update provided fields)
         studentProfileMapper.updateStudentProfileRequestBodyToStudentProfile(updateStudentProfileRequest, existingProfile);
 
         // 3. Save updated profile
-        StudentProfile savedStudentProfile = profileRepository.save(existingProfile);
+        StudentProfile savedStudentProfile = studentProfileRepository.save(existingProfile);
 
         // 4. Map entity to summary response
         SummaryStudentProfileResponse summaryStudentProfileResponse = studentProfileMapper.toSummaryResponse(savedStudentProfile);
@@ -76,7 +75,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         return ServiceResponse.<SummaryStudentProfileResponse>builder()
                 .statusCode(StatusCode.SUCCESS)
                 .status(StatusResponse.SUCCESS)
-                .message(MessageResponse.UPDATE_STUDENT_PROFILE_SUCCESS)
+                .message(MessageResponse.format(MessageResponse.UPDATE_STUDENT_PROFILE_SUCCESS))
                 .data(summaryStudentProfileResponse)
                 .build();
     }
@@ -96,13 +95,47 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     @Override
     public ServiceResponse<Void>
     deleteStudentProfileByIdentityId(String identityId) {
-        return null;
+
+        // 1. Find existing profile
+        StudentProfile studentProfile = studentProfileRepository.findByIdentityId(identityId)
+                .orElseThrow(() -> new StudentProfileNotFoundException(identityId));
+
+        // 2. Soft-delete the Student Profile
+        studentProfile.setIsDeleted(true);
+
+        // 3. Save updated profile
+        studentProfileRepository.save(studentProfile);
+
+        // 4. Return wrapped ServiceResponse
+        return ServiceResponse.<Void>builder()
+                .statusCode(StatusCode.SUCCESS)
+                .status(StatusResponse.SUCCESS)
+                .message(MessageResponse.format(MessageResponse.DELETE_STUDENT_PROFILE_SUCCESS))
+                .build();
+
     }
 
     @Override
     public ServiceResponse<Void>
     restoreStudentProfile(String identityId) {
-        return null;
+
+        // 1. Find existing profile
+        StudentProfile studentProfile = studentProfileRepository.findByIdentityIdIncludeSoftDeleted(identityId)
+                .orElseThrow(() -> new StudentProfileNotFoundException(identityId));
+
+        // 2. Soft-delete the Student Profile
+        studentProfile.setIsDeleted(false);
+
+        // 3. Save updated profile
+        studentProfileRepository.save(studentProfile);
+
+        // 4. Return wrapped ServiceResponse
+        return ServiceResponse.<Void>builder()
+                .statusCode(StatusCode.SUCCESS)
+                .status(StatusResponse.SUCCESS)
+                .message(MessageResponse.format(MessageResponse.RESTORE_STUDENT_PROFILE_SUCCESS))
+                .build();
+
     }
 
 
@@ -115,7 +148,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         String email = baseEmail + "@school.com";
         int counter = 1;
         
-        while (profileRepository.findBySchoolEmail(email).isPresent()) {
+        while (studentProfileRepository.findBySchoolEmail(email).isPresent()) {
             email = baseEmail + counter + "@school.com";
             counter++;
         }

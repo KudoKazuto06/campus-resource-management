@@ -7,6 +7,14 @@ public class MessageResponse {
             ADD_STUDENT_PROFILE_SUCCESS = "Add Student Profile Successfully";
     public static final String
             UPDATE_STUDENT_PROFILE_SUCCESS = "Update Student Profile Successfully";
+    public static final String
+            VIEW_ALL_STUDENT_PROFILE_SUCCESS = "View All Student Profile Successfully";
+    public static final String
+            VIEW_DETAIL_STUDENT_PROFILE_SUCCESS = "View Detail Student Profile Successfully";
+    public static final String
+            DELETE_STUDENT_PROFILE_SUCCESS = "Delete Student Profile Successfully";
+    public static final String
+            RESTORE_STUDENT_PROFILE_SUCCESS = "Restore Student Profile Successfully";
 
     // VALIDATION
     public static final String
