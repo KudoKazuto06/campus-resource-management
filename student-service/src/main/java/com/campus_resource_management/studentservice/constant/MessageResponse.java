@@ -5,6 +5,8 @@ public class MessageResponse {
     // SUCCESS
     public static final String
             ADD_STUDENT_PROFILE_SUCCESS = "Add Student Profile Successfully";
+    public static final String
+            UPDATE_STUDENT_PROFILE_SUCCESS = "Update Student Profile Successfully";
 
     // VALIDATION
     public static final String
@@ -17,9 +19,15 @@ public class MessageResponse {
             LAST_NAME_MAX_LENGTH = "Last Name Reached Maximum Length [50]";
     public static final String
             STUDENT_NOTE_MAX_LENGTH = "Student Note Maximum Length [1000]";
+    public static final String
+            EMAIL_FORMAT_INVALID = "Invalid Email Format";
+    public static final String
+            GENDER_FORMAT_INVALID = "Invalid Gender Format";
 
 
     // REQUIRED
+    public static final String
+            STUDENT_PROFILE_ID_IS_REQUIRED = "Student Profile ID is Required";
     public static final String
             IDENTITY_ID_IS_REQUIRED = "Identity ID is required";
     public static final String

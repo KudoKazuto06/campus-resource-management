@@ -18,20 +18,20 @@ public class AddStudentProfileRequest {
     @ValidIdentityId
     private String identityId;
 
-    @NotBlank(message = MessageResponse.FIRST_NAME_IS_REQUIRED)
+    @NotNull(message = MessageResponse.FIRST_NAME_IS_REQUIRED)
     @Size(max = 50, message = MessageResponse.FIRST_NAME_MAX_LENGTH)
     private String firstName;
 
-    @NotBlank(message = MessageResponse.LAST_NAME_IS_REQUIRED)
+    @NotNull(message = MessageResponse.LAST_NAME_IS_REQUIRED)
     @Size(max = 50, message = MessageResponse.LAST_NAME_MAX_LENGTH)
     private String lastName;
 
     @NotBlank(message = MessageResponse.EMAIL_IS_REQUIRED)
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$", message = "Email Format Default")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$", message = MessageResponse.EMAIL_FORMAT_INVALID)
     private String email;
 
     @NotBlank(message = MessageResponse.GENDER_IS_REQUIRED)
-    @Pattern(regexp = "MALE|FEMALE|OTHER", message = "Gender Default")
+    @Pattern(regexp = "MALE|FEMALE", message = MessageResponse.GENDER_FORMAT_INVALID) // Currently dont accept OTHERS
     private String gender;
 
     @NotNull(message = MessageResponse.DATE_OF_BIRTH_IS_REQUIRED)

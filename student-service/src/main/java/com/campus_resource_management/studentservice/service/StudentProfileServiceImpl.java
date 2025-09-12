@@ -9,6 +9,7 @@ import com.campus_resource_management.studentservice.dto.student_profile.request
 import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import com.campus_resource_management.studentservice.entity.StudentProfile;
+import com.campus_resource_management.studentservice.exception.StudentProfileNotFoundException;
 import com.campus_resource_management.studentservice.mapper.StudentProfileMapper;
 import com.campus_resource_management.studentservice.repository.StudentProfileRepository;
 import jakarta.validation.Valid;
@@ -57,7 +58,27 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     @Override
     public ServiceResponse<SummaryStudentProfileResponse>
     updateStudentProfile(UpdateStudentProfileRequest updateStudentProfileRequest) {
-        return null;
+
+        // 1. Find existing profile
+        StudentProfile existingProfile = profileRepository.findByIdentityId(updateStudentProfileRequest.getIdentityId())
+                .orElseThrow(() -> new StudentProfileNotFoundException(updateStudentProfileRequest.getIdentityId()));
+
+        // 2. Map fields from request to entity (only update provided fields)
+        studentProfileMapper.updateStudentProfileRequestBodyToStudentProfile(updateStudentProfileRequest, existingProfile);
+
+        // 3. Save updated profile
+        StudentProfile savedStudentProfile = profileRepository.save(existingProfile);
+
+        // 4. Map entity to summary response
+        SummaryStudentProfileResponse summaryStudentProfileResponse = studentProfileMapper.toSummaryResponse(savedStudentProfile);
+
+        // 5. Return wrapped ServiceResponse
+        return ServiceResponse.<SummaryStudentProfileResponse>builder()
+                .statusCode(StatusCode.SUCCESS)
+                .status(StatusResponse.SUCCESS)
+                .message(MessageResponse.UPDATE_STUDENT_PROFILE_SUCCESS)
+                .data(summaryStudentProfileResponse)
+                .build();
     }
 
     @Override
