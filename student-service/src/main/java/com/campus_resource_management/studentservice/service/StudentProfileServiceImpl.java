@@ -64,6 +64,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
 
         // 2. Map fields from request to entity (only update provided fields)
         studentProfileMapper.updateStudentProfileRequestBodyToStudentProfile(updateStudentProfileRequest, existingProfile);
+        existingProfile.setModifiedBy("SYSTEM");
 
         // 3. Save updated profile
         StudentProfile savedStudentProfile = studentProfileRepository.save(existingProfile);

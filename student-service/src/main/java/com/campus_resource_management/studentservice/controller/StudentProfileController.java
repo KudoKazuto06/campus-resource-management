@@ -51,7 +51,7 @@ public class StudentProfileController {
     }
 
     @DeleteMapping("/delete")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public ServiceResponse<Void> deleteStudentProfile(@RequestParam String identityId) {
         return studentProfileService.deleteStudentProfileByIdentityId(identityId);
     }

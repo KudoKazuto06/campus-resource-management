@@ -13,7 +13,11 @@ import org.mapstruct.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Mapper(componentModel = "spring", imports = {DegreeType.class, Gender.class, StudentStatus.class, LocalDate.class})
+@Mapper(
+        componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        imports = {DegreeType.class, Gender.class, StudentStatus.class, LocalDate.class}
+)
 public interface StudentProfileMapper {
 
     // ======== ENTITY -> RESPONSE ========
@@ -49,14 +53,16 @@ public interface StudentProfileMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
-    @Mapping(expression = "java(Gender.valueOf(addStudentProfileRequest.getGender().toUpperCase()))",
-            target = "gender")
+    @Mapping(target = "gender", expression = "java(updateStudentProfileRequest.getGender() != null ? " +
+            "Gender.valueOf(updateStudentProfileRequest.getGender().toUpperCase()) : " +
+            "studentProfile.getGender())")
     @Mapping(source = "dateOfBirth", target = "dateOfBirth")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "phoneNumber", target = "phoneNumber")
-    @Mapping(expression = "java(DegreeType.valueOf(addStudentProfileRequest.getDegreeType().toUpperCase()))",
-            target = "degreeType")
+    @Mapping(target = "degreeType", expression = "java(updateStudentProfileRequest.getDegreeType() != null ? " +
+            "DegreeType.valueOf(updateStudentProfileRequest.getDegreeType().toUpperCase()) : " +
+            "studentProfile.getDegreeType())")
     @Mapping(source = "major", target = "major")
     @Mapping(source = "studentNote", target = "studentNote")
     void updateStudentProfileRequestBodyToStudentProfile(
