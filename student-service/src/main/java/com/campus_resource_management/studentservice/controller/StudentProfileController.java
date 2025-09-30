@@ -6,6 +6,7 @@ import com.campus_resource_management.studentservice.dto.student_profile.request
 import com.campus_resource_management.studentservice.dto.student_profile.request.FilterStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.request.UpdateStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
+import com.campus_resource_management.studentservice.dto.student_profile.response.FilterStudentProfileResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import com.campus_resource_management.studentservice.service.StudentProfileService;
 import jakarta.validation.Valid;
@@ -36,7 +37,7 @@ public class StudentProfileController {
 
     @GetMapping("/viewAll")
     @ResponseStatus(HttpStatus.OK)
-    public ServiceResponse<PaginationResponse> viewAllStudentProfile(
+    public ServiceResponse<PaginationResponse<FilterStudentProfileResponse>> viewAllStudentProfile(
             @Valid FilterStudentProfileRequest filterStudentProfileRequest,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {

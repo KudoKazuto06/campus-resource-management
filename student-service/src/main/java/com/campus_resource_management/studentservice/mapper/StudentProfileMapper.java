@@ -6,6 +6,7 @@ import com.campus_resource_management.studentservice.constant.StudentStatus;
 import com.campus_resource_management.studentservice.dto.student_profile.request.AddStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.request.UpdateStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
+import com.campus_resource_management.studentservice.dto.student_profile.response.FilterStudentProfileResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import com.campus_resource_management.studentservice.entity.StudentProfile;
 import org.mapstruct.*;
@@ -26,6 +27,9 @@ public interface StudentProfileMapper {
     SummaryStudentProfileResponse toSummaryResponse(StudentProfile studentProfile);
     List<SummaryStudentProfileResponse> toSummaryResponseList(List<StudentProfile> studentProfileList);
 
+    @Mapping(target = "fullName", expression = "java(studentProfile.getFirstName() + \" \" + studentProfile.getLastName())")
+    FilterStudentProfileResponse toFilterResponse(StudentProfile studentProfile);
+    List<FilterStudentProfileResponse> toFilterResponseList(List<StudentProfile> studentProfileList);
 
     // ======== ADD REQUEST -> ENTITY ========
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

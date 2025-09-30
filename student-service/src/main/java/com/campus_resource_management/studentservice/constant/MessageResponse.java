@@ -31,6 +31,12 @@ public class MessageResponse {
             EMAIL_FORMAT_INVALID = "Invalid Email Format";
     public static final String
             GENDER_FORMAT_INVALID = "Invalid Gender Format";
+    public static final String
+            STUDENT_STATUS_FORMAT_INVALID = "Invalid Student Status Format";
+    public static final String
+            PAGE_FORMAT_INVALID = "Invalid Page Format";
+    public static final String
+            SIZE_FORMAT_INVALID =  "Invalid Size Format";
 
 
     // REQUIRED
@@ -57,6 +63,11 @@ public class MessageResponse {
     public static final String
             MINOR_TYPE_IS_REQUIRED = "Minor Type is required";
 
+    // NOT FOUND
+    public static final String
+            STUDENT_PROFILE_NOT_FOUND = "Student Profile Not Found";
+    public static final String
+            NO_DATA = "No data found";
 
     // EXISTED
     public static final String

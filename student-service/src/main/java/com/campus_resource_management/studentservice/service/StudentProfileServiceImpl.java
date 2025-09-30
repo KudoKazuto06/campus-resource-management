@@ -7,13 +7,22 @@ import com.campus_resource_management.studentservice.dto.student_profile.request
 import com.campus_resource_management.studentservice.dto.student_profile.request.FilterStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.request.UpdateStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
+import com.campus_resource_management.studentservice.dto.student_profile.response.FilterStudentProfileResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import com.campus_resource_management.studentservice.entity.StudentProfile;
+import com.campus_resource_management.studentservice.exception.ListEmptyException;
 import com.campus_resource_management.studentservice.exception.StudentProfileNotFoundException;
 import com.campus_resource_management.studentservice.mapper.StudentProfileMapper;
 import com.campus_resource_management.studentservice.repository.StudentProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -82,9 +91,56 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     }
 
     @Override
-    public ServiceResponse<PaginationResponse>
+    public ServiceResponse<PaginationResponse<FilterStudentProfileResponse>>
     viewFilteredStudentProfile(FilterStudentProfileRequest filterStudentProfileRequest){
-        return null;
+
+        // 1. Default page & size if null
+        int page = filterStudentProfileRequest.getPage() != null ? filterStudentProfileRequest.getPage() : 0;
+        int size = filterStudentProfileRequest.getSize() != null ? filterStudentProfileRequest.getSize() : 5;
+
+        // 2. Build list of Sort.Order based on sortBy field
+        List<Sort.Order> orders = new ArrayList<>();
+        String sortBy = filterStudentProfileRequest.getSortBy();
+        if (sortBy != null && !sortBy.isBlank()) {
+            String[] sortParts = filterStudentProfileRequest.getSortBy().split(" ");
+            String property = sortParts[0];
+            boolean isAscending = sortParts.length == 1 || !sortParts[1].equalsIgnoreCase("desc");
+            orders.add(isAscending ? Sort.Order.asc(property) : Sort.Order.desc(property));
+        } else {
+            // Default sorting
+            orders.add(Sort.Order.desc("createdAt"));
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+
+        // 3. Fetch paged results
+        Page<StudentProfile> studentProfilePage = studentProfileRepository
+                .filterStudentProfile(filterStudentProfileRequest, pageable);
+
+        // 4. Handle empty list
+        if (studentProfilePage.getContent().isEmpty()) {
+            throw new ListEmptyException(MessageResponse.NO_DATA + filterStudentProfileRequest.toString());
+        }
+
+        // 5. Map to Summary DTOs and wrap in PaginationResponse
+        PaginationResponse<FilterStudentProfileResponse> paginationResponse =
+                PaginationResponse.<FilterStudentProfileResponse>builder()
+                        .listData(studentProfilePage.getContent().stream()
+                                .map(studentProfileMapper::toFilterResponse)
+                                .toList())
+                        .totalPages(studentProfilePage.getTotalPages())
+                        .currentPage(studentProfilePage.getNumber())
+                        .totalItems(studentProfilePage.getTotalElements())
+                        .pageSize(studentProfilePage.getSize())
+                        .build();
+
+        // 6. Wrap in ServiceResponse
+        return ServiceResponse.<PaginationResponse<FilterStudentProfileResponse>>builder()
+                .statusCode(StatusCode.SUCCESS)
+                .status(StatusResponse.SUCCESS)
+                .message(MessageResponse.VIEW_ALL_STUDENT_PROFILE_SUCCESS)
+                .data(paginationResponse)
+                .build();
     }
 
     @Override

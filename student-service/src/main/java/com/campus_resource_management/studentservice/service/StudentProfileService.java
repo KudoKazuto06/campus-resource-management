@@ -6,6 +6,7 @@ import com.campus_resource_management.studentservice.dto.student_profile.request
 import com.campus_resource_management.studentservice.dto.student_profile.request.FilterStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.request.UpdateStudentProfileRequest;
 import com.campus_resource_management.studentservice.dto.student_profile.response.DetailedStudentProfileResponse;
+import com.campus_resource_management.studentservice.dto.student_profile.response.FilterStudentProfileResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,7 @@ public interface StudentProfileService {
     ServiceResponse<SummaryStudentProfileResponse>
     updateStudentProfile(@Valid UpdateStudentProfileRequest updateStudentProfileRequest);
 
-    ServiceResponse<PaginationResponse>
+    ServiceResponse<PaginationResponse<FilterStudentProfileResponse>>
     viewFilteredStudentProfile(@Valid FilterStudentProfileRequest filterStudentProfileRequest);
 
     ServiceResponse<DetailedStudentProfileResponse>

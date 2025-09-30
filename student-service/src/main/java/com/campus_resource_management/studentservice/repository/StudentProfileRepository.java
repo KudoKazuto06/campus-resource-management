@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface StudentProfileRepository extends JpaRepository<StudentProfile, UUID> {
+public interface StudentProfileRepository extends JpaRepository<StudentProfile, UUID>, StudentProfileRepositoryForFilter {
 
     // ===== Search only active Student Profiles =====
     @Query("SELECT s FROM StudentProfile s WHERE s.identityId = :identityId AND s.isDeleted = false")

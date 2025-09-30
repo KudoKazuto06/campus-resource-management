@@ -22,6 +22,15 @@ public class GlobalExceptionHandler {
         return Map.of("error", message);
     }
 
+    @ExceptionHandler(ListEmptyException.class)
+    public ServiceResponse<Void> handleListEmptyException(ListEmptyException ex) {
+        return ServiceResponse.<Void>builder()
+                .status(StatusResponse.FAILURE)
+                .statusCode(StatusCode.NOT_FOUND)
+                .message(ex.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(StudentProfileNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ServiceResponse<Void> handleNotFound(StudentProfileNotFoundException ex){
