@@ -138,7 +138,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         return ServiceResponse.<PaginationResponse<FilterStudentProfileResponse>>builder()
                 .statusCode(StatusCode.SUCCESS)
                 .status(StatusResponse.SUCCESS)
-                .message(MessageResponse.VIEW_ALL_STUDENT_PROFILE_SUCCESS)
+                .message(MessageResponse.format(MessageResponse.VIEW_ALL_STUDENT_PROFILE_SUCCESS))
                 .data(paginationResponse)
                 .build();
     }
@@ -146,7 +146,17 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     @Override
     public ServiceResponse<DetailedStudentProfileResponse>
     viewDetailedStudentProfileByIdentityId(String identityId) {
-        return null;
+        // 1. Fetch the student profile
+        StudentProfile studentProfile = studentProfileRepository.findByIdentityId(identityId)
+                .orElseThrow(() -> new StudentProfileNotFoundException(identityId));
+
+        // 2. Map entity to response DTO and Return in ServiceResponse
+        return ServiceResponse.<DetailedStudentProfileResponse>builder()
+                .status(StatusResponse.SUCCESS)
+                .statusCode(StatusCode.SUCCESS)
+                .message(MessageResponse.format(MessageResponse.VIEW_DETAIL_STUDENT_PROFILE_SUCCESS))
+                .data(studentProfileMapper.toStudentProfileResponse(studentProfile))
+                .build();
     }
 
     @Override
@@ -194,7 +204,6 @@ public class StudentProfileServiceImpl implements StudentProfileService {
                 .build();
 
     }
-
 
     // ------------------------------------------------------------------------------------------------ //
 
