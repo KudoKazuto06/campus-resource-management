@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  course-service:
+    build: .
+    container_name: course_service_app
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://course-postgres:5432/course_db
+      SPRING_DATASOURCE_USERNAME: course_user
+      SPRING_DATASOURCE_PASSWORD: course_pass
+    depends_on:
+      - course-postgres
+
+  course-postgres:
+    image: postgres:15
+    container_name: course_postgres
+    environment:
+      POSTGRES_USER: course_user
+      POSTGRES_PASSWORD: course_pass
+      POSTGRES_DB: course_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - course_pg_data:/var/lib/postgresql/data
+
+volumes:
+  course_pg_data:
