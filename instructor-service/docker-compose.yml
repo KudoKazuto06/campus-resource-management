@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  instructor-service:
+    build: .
+    container_name: instructor_service_app
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://instructor-postgres:5432/instructor_db
+      SPRING_DATASOURCE_USERNAME: instructor_user
+      SPRING_DATASOURCE_PASSWORD: instructor_pass
+    depends_on:
+      - instructor-postgres
+
+  instructor-postgres:
+    image: postgres:15
+    container_name: instructor_postgres
+    environment:
+      POSTGRES_USER: instructor_user
+      POSTGRES_PASSWORD: instructor_pass
+      POSTGRES_DB: instructor_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - instructor_pg_data:/var/lib/postgresql/data
+
+volumes:
+  instructor_pg_data:

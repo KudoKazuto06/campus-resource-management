@@ -18,11 +18,11 @@ public class AddStudentProfileRequest {
     @ValidIdentityId
     private String identityId;
 
-    @NotNull(message = MessageResponse.FIRST_NAME_IS_REQUIRED)
+    @NotBlank(message = MessageResponse.FIRST_NAME_IS_REQUIRED)
     @Size(max = 50, message = MessageResponse.FIRST_NAME_MAX_LENGTH)
     private String firstName;
 
-    @NotNull(message = MessageResponse.LAST_NAME_IS_REQUIRED)
+    @NotBlank(message = MessageResponse.LAST_NAME_IS_REQUIRED)
     @Size(max = 50, message = MessageResponse.LAST_NAME_MAX_LENGTH)
     private String lastName;
 

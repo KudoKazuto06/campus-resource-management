@@ -19,4 +19,6 @@ public interface StudentProfileRepository extends JpaRepository<StudentProfile, 
     @Query("SELECT s FROM StudentProfile s WHERE s.schoolEmail = :schoolEmail")
     Optional<StudentProfile> findBySchoolEmail(String schoolEmail);
 
+    boolean existsBySchoolEmail(String email);
+
 }

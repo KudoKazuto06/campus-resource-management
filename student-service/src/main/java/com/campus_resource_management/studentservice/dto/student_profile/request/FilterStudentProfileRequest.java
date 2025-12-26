@@ -17,8 +17,11 @@ import java.time.LocalDate;
 public class FilterStudentProfileRequest {
 
     @Min(value = 0, message = MessageResponse.PAGE_FORMAT_INVALID)
+    @Builder.Default
     private Integer page = 0;
+
     @Min(value = 1, message = MessageResponse.SIZE_FORMAT_INVALID)
+    @Builder.Default
     private Integer size = 10;
 
     private String identityId;

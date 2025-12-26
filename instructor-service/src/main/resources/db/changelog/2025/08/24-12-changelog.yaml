@@ -1,0 +1,155 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1755103900200-1
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: instructor_profiles
+            columns:
+              - column:
+                  name: instructor_id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: pk_instructor_profiles
+
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: modified_at
+                  type: DATETIME
+
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+
+              - column:
+                  name: identity_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: gender
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: date_of_birth
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: school_email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+
+              - column:
+                  name: office_location
+                  type: VARCHAR(255)
+
+              - column:
+                  name: department
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: academic_rank
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: employment_status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: hire_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: salary_band
+                  type: VARCHAR(255)
+
+              - column:
+                  name: office_hours
+                  type: VARCHAR(255)
+
+              - column:
+                  name: instructor_note
+                  type: VARCHAR(255)
+
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+  - changeSet:
+      id: 1755103900200-2
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: uc_instructor_profiles_email
+            tableName: instructor_profiles
+  - changeSet:
+      id: 1755103900200-3
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: identity_id
+            constraintName: uc_instructor_profiles_identity
+            tableName: instructor_profiles
+  - changeSet:
+      id: 1755103900200-4
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: school_email
+            constraintName: uc_instructor_profiles_school_email
+            tableName: instructor_profiles

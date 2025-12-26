@@ -211,11 +211,11 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         String baseEmail =
                 (firstName.replaceAll("\\s+", "") + "."
                         + lastName.replaceAll("\\s+", "")).toLowerCase();
-        String email = baseEmail + "@school.com";
+        String email = baseEmail + "@stu.byteacademy.com";
         int counter = 1;
         
         while (studentProfileRepository.findBySchoolEmail(email).isPresent()) {
-            email = baseEmail + counter + "@school.com";
+            email = baseEmail + counter + "@stu.byteacademy.com";
             counter++;
         }
         return email;

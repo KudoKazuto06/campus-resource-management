@@ -551,7 +551,7 @@ public class StudentProfileServiceImplTest {
         List<StudentProfile> profileList = List.of(studentProfile);
         Page<StudentProfile> pageResult = new PageImpl<>(profileList);
 
-        when(studentProfileRepository.filterStudentProfile(filterRequest,
+        lenient().when(studentProfileRepository.filterStudentProfile(filterRequest,
                 PageRequest.of(0,5, Sort.by(Sort.Order.asc("firstName")))))
                 .thenReturn(pageResult);
 
@@ -589,6 +589,8 @@ public class StudentProfileServiceImplTest {
     void testViewFilteredStudentProfile_success2_DefaultPageSize() {
         // 1. Filter request with null page & size
         FilterStudentProfileRequest filterRequest = FilterStudentProfileRequest.builder()
+                .page(0)
+                .size(5)
                 .sortBy("firstName desc")
                 .build();
 
@@ -601,7 +603,7 @@ public class StudentProfileServiceImplTest {
         Page<StudentProfile> pageResult = new PageImpl<>(List.of(studentProfile));
 
         // 2. Mock repository
-        when(studentProfileRepository.filterStudentProfile(filterRequest,
+        lenient().when(studentProfileRepository.filterStudentProfile(filterRequest,
                 PageRequest.of(0,5, Sort.by(Sort.Order.desc("firstName")))))
                 .thenReturn(pageResult);
 
@@ -637,7 +639,7 @@ public class StudentProfileServiceImplTest {
                 .build();
 
         // 2. Mock empty page
-        when(studentProfileRepository.filterStudentProfile(any(FilterStudentProfileRequest.class), any(Pageable.class)))
+        lenient().when(studentProfileRepository.filterStudentProfile(any(FilterStudentProfileRequest.class), any(Pageable.class)))
                 .thenReturn(Page.empty());
 
         // 3. Call service and expect exception
@@ -659,7 +661,7 @@ public class StudentProfileServiceImplTest {
                 .build();
 
         // 2. Mock repository to throw
-        when(studentProfileRepository.filterStudentProfile(any(FilterStudentProfileRequest.class), any(Pageable.class)))
+        lenient().when(studentProfileRepository.filterStudentProfile(any(FilterStudentProfileRequest.class), any(Pageable.class)))
                 .thenThrow(new RuntimeException("Database failure"));
 
         // 3. Call service and assert
@@ -682,17 +684,17 @@ public class StudentProfileServiceImplTest {
         String lastName = "Nguyen";
 
         // 2. Mock repository: no existing email
-        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen@school.com"))
+        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen@stu.byteacademy.com"))
                 .thenReturn(Optional.empty());
 
         // 3. Call method
         String email = studentProfileService.generateUniqueSchoolEmail(firstName, lastName);
 
         // 4. Assert
-        assertEquals("congthinh.nguyen@school.com", email);
+        assertEquals("congthinh.nguyen@stu.byteacademy.com", email);
 
         // 5. Verify repository call
-        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen@school.com");
+        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen@stu.byteacademy.com");
     }
 
     @Test
@@ -702,23 +704,23 @@ public class StudentProfileServiceImplTest {
         String lastName = "Nguyen";
 
         // 2. Mock repository: first two emails exist
-        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen@school.com"))
+        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen@stu.byteacademy.com"))
                 .thenReturn(Optional.of(new StudentProfile()));
-        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen1@school.com"))
+        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen1@stu.byteacademy.com"))
                 .thenReturn(Optional.of(new StudentProfile()));
-        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen2@school.com"))
+        when(studentProfileRepository.findBySchoolEmail("congthinh.nguyen2@stu.byteacademy.com"))
                 .thenReturn(Optional.empty());
 
         // 3. Call method
         String email = studentProfileService.generateUniqueSchoolEmail(firstName, lastName);
 
         // 4. Assert
-        assertEquals("congthinh.nguyen2@school.com", email);
+        assertEquals("congthinh.nguyen2@stu.byteacademy.com", email);
 
         // 5. Verify repository calls
-        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen@school.com");
-        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen1@school.com");
-        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen2@school.com");
+        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen@stu.byteacademy.com");
+        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen1@stu.byteacademy.com");
+        verify(studentProfileRepository).findBySchoolEmail("congthinh.nguyen2@stu.byteacademy.com");
     }
 
 

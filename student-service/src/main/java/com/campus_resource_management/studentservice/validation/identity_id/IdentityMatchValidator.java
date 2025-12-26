@@ -25,13 +25,7 @@ public class IdentityMatchValidator
             gender = addDto.getGender();
             dateOfBirth = addDto.getDateOfBirth();
 
-        }
-//        else if (obj instanceof UpdatePatientRequestBody updateDto) {
-//            identityId = updateDto.getPatientIdentityId();
-//            gender = updateDto.getPatientGender();
-//            dateOfBirth = updateDto.getPatientBirthDate();
-//        }
-        else if (obj instanceof StudentProfile patient) {
+        } else if (obj instanceof StudentProfile patient) {
             identityId = patient.getIdentityId();
             gender = String.valueOf(patient.getGender());
             dateOfBirth = patient.getDateOfBirth();
