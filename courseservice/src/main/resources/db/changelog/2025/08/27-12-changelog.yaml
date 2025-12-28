@@ -1,0 +1,239 @@
+databaseChangeLog:
+
+  # --------------------------------------------------
+  # 1. COURSES
+  # --------------------------------------------------
+  - changeSet:
+      id: 1755103900300-1
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: courses
+            columns:
+              - column:
+                  name: course_id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: pk_courses
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: modified_at
+                  type: timestamp
+
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+
+              - column:
+                  name: course_code
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: course_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: credit
+                  type: double precision
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+
+  - changeSet:
+      id: 1755103900300-2
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            tableName: courses
+            columnNames: course_code
+            constraintName: uc_courses_course_code
+
+  # --------------------------------------------------
+  # 2. COURSE OFFERINGS
+  # --------------------------------------------------
+  - changeSet:
+      id: 1755103900300-3
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: course_offerings
+            columns:
+              - column:
+                  name: offering_id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: pk_course_offerings
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: modified_at
+                  type: timestamp
+
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+
+              - column:
+                  name: course_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: term
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: year
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: instructor_identity_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: max_students
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+
+  - changeSet:
+      id: 1755103900300-4
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: course_offerings
+            baseColumnNames: course_id
+            referencedTableName: courses
+            referencedColumnNames: course_id
+            constraintName: fk_course_offerings_course
+
+  - changeSet:
+      id: 1755103900300-5
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            tableName: course_offerings
+            columnNames: course_id, term, year
+            constraintName: uc_course_offerings_course_term_year
+
+  # --------------------------------------------------
+  # 3. COURSE ENROLLMENTS
+  # --------------------------------------------------
+  - changeSet:
+      id: 1755103900300-6
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: course_enrollments
+            columns:
+              - column:
+                  name: enrollment_id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: pk_course_enrollments
+
+              - column:
+                  name: offering_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: student_identity_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: enrolled_at
+                  type: date
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_withdrawn
+                  type: BOOLEAN
+
+  - changeSet:
+      id: 1755103900300-7
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: course_enrollments
+            baseColumnNames: offering_id
+            referencedTableName: course_offerings
+            referencedColumnNames: offering_id
+            constraintName: fk_course_enrollments_offering
+
+  - changeSet:
+      id: 1755103900300-8
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            tableName: course_enrollments
+            columnNames: offering_id, student_identity_id
+            constraintName: uc_course_enrollments_offering_student
