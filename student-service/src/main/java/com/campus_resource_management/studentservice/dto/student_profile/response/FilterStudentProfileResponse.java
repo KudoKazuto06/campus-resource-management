@@ -11,8 +11,6 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class FilterStudentProfileResponse {
-
-    private String identityId;
     private String fullName;
     private Gender gender;
     private LocalDate dateOfBirth;

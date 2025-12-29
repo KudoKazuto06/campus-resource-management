@@ -9,9 +9,9 @@ import lombok.Getter;
 @Builder
 public class FilterInstructorProfileResponse {
 
-    private String identityId;
     private String fullName;
     private String department;
+    private String schoolEmail;
     private AcademicRank academicRank;
     private EmploymentStatus employmentStatus;
 

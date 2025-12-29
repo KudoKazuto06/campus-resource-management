@@ -577,7 +577,6 @@ public class InstructorProfileServiceImplTest {
 
         // 3. Prepare mapper
         FilterInstructorProfileResponse mappedResponse = FilterInstructorProfileResponse.builder()
-                .identityId(String.valueOf(1L))
                 .fullName("Cong Thinh Nguyen")
                 .build();
 
@@ -629,7 +628,6 @@ public class InstructorProfileServiceImplTest {
 
         // 3. Mapper
         FilterInstructorProfileResponse mappedResponse = FilterInstructorProfileResponse.builder()
-                .identityId(String.valueOf(1L))
                 .fullName("Cong Thinh Nguyen")
                 .build();
 

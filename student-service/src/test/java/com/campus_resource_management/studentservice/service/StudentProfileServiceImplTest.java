@@ -557,7 +557,6 @@ public class StudentProfileServiceImplTest {
 
         // 3. Prepare mapper
         FilterStudentProfileResponse mappedResponse = FilterStudentProfileResponse.builder()
-                .identityId(String.valueOf(1L))
                 .fullName("Cong Thinh Nguyen")
                 .build();
 
@@ -609,7 +608,6 @@ public class StudentProfileServiceImplTest {
 
         // 3. Mapper
         FilterStudentProfileResponse mappedResponse = FilterStudentProfileResponse.builder()
-                .identityId(String.valueOf(1L))
                 .fullName("Cong Thinh Nguyen")
                 .build();
 
