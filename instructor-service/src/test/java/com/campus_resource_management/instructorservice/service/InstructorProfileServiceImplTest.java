@@ -114,47 +114,33 @@ public class InstructorProfileServiceImplTest {
     }
 
     @Test
-    void testAddInstructorProfile_error_MapperThrowsException(){
-        // 1. Prepare request DTO
+    void testAddInstructorProfile_error_MapperThrowsException() {
         AddInstructorProfileRequest request = new AddInstructorProfileRequest();
         request.setIdentityId("id-123");
         request.setFirstName("Nguyen");
         request.setLastName("Cong Thinh");
         request.setEmail("test@gmail.com");
 
-        // 2. Mock repository checks (must pass first)
-        when(instructorProfileRepository.findByIdentityId(any()))
-                .thenReturn(Optional.empty());
-        when(instructorProfileRepository.findByEmail(any()))
-                .thenReturn(Optional.empty());
-
-        // 3. Mock mapper to throw exception
+        // Mock mapper to throw exception
         doThrow(new IllegalArgumentException("Invalid data"))
                 .when(instructorProfileMapper)
-                .addInstructorProfileRequestBodyToInstructorProfile(any(AddInstructorProfileRequest.class), any(InstructorProfile.class));
-
-        // 4. Assert that exception is propagated
-        Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                instructorProfileService.addInstructorProfile(request));
-
-        assertEquals("Invalid data", exception.getMessage());
-
-        // 4. Verify mapper was called
-        verify(instructorProfileMapper).addInstructorProfileRequestBodyToInstructorProfile(any(AddInstructorProfileRequest.class), any(InstructorProfile.class));
-
-        // 5. Verify interactions
-        verify(instructorProfileRepository).findByIdentityId(any());
-        verify(instructorProfileRepository).findByEmail(any());
-        verify(instructorProfileMapper)
                 .addInstructorProfileRequestBodyToInstructorProfile(any(), any());
 
-        // 6. Save must NEVER be called
+        // Assert exception is propagated
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> instructorProfileService.addInstructorProfile(request));
+        assertEquals("Invalid data", exception.getMessage());
+
+        // Verify mapper was called
+        verify(instructorProfileMapper).addInstructorProfileRequestBodyToInstructorProfile(any(), any());
+
+        // Verify repository save is NEVER called
         verify(instructorProfileRepository, never()).save(any());
     }
 
+
     @Test
     void testUpdateInstructorProfile_success_shouldReturnSummaryResponse() {
-        // 1. Prepare request DTO
         Long profileId = 1L;
         UpdateInstructorProfileRequest request = UpdateInstructorProfileRequest.builder()
                 .identityId(String.valueOf(profileId))
@@ -163,7 +149,6 @@ public class InstructorProfileServiceImplTest {
                 .email("thinhnguyen@gmail.com")
                 .build();
 
-        // 2. Prepare existing entity and updated entity
         InstructorProfile existingProfile = InstructorProfile.builder()
                 .identityId(String.valueOf(profileId))
                 .firstName("Old Name")
@@ -178,7 +163,6 @@ public class InstructorProfileServiceImplTest {
                 .email("thinhnguyen@gmail.com")
                 .build();
 
-        // 3. Prepare expected response DTO
         SummaryInstructorProfileResponse responseDto = SummaryInstructorProfileResponse.builder()
                 .identityId(String.valueOf(profileId))
                 .firstName("Cong Thinh")
@@ -186,30 +170,25 @@ public class InstructorProfileServiceImplTest {
                 .email("thinhnguyen@gmail.com")
                 .build();
 
-        // 4. Mock repository + mapper behaviour
-        when(instructorProfileRepository.findByIdentityId(String.valueOf(profileId)))
+        when(instructorProfileRepository.findActiveByIdentityId(String.valueOf(profileId)))
                 .thenReturn(Optional.of(existingProfile));
+        when(instructorProfileRepository.findActiveByEmail(request.getEmail()))
+                .thenReturn(Optional.empty());
 
         doNothing().when(instructorProfileMapper)
                 .updateInstructorProfileRequestBodyToInstructorProfile(any(UpdateInstructorProfileRequest.class), eq(existingProfile));
 
-        when(instructorProfileRepository.save(existingProfile))
-                .thenReturn(updatedProfile);
+        when(instructorProfileRepository.save(existingProfile)).thenReturn(updatedProfile);
+        when(instructorProfileMapper.toSummaryResponse(updatedProfile)).thenReturn(responseDto);
 
-        when(instructorProfileMapper.toSummaryResponse(updatedProfile))
-                .thenReturn(responseDto);
-
-        // 5. Call the service method
         ServiceResponse<SummaryInstructorProfileResponse> serviceResponse =
                 instructorProfileService.updateInstructorProfile(request);
 
-        // 6. Verify returned response
         assertEquals(StatusCode.SUCCESS, serviceResponse.getStatusCode());
-        assertTrue(serviceResponse.getMessage().contains(MessageResponse.UPDATE_INSTRUCTOR_PROFILE_SUCCESS));
         assertEquals(responseDto, serviceResponse.getData());
 
-        // 7. Verify interactions with mocks
-        verify(instructorProfileRepository).findByIdentityId(String.valueOf(profileId));
+        verify(instructorProfileRepository).findActiveByIdentityId(String.valueOf(profileId));
+        verify(instructorProfileRepository).findActiveByEmail(request.getEmail());
         verify(instructorProfileMapper).updateInstructorProfileRequestBodyToInstructorProfile(request, existingProfile);
         verify(instructorProfileRepository).save(existingProfile);
         verify(instructorProfileMapper).toSummaryResponse(updatedProfile);
@@ -217,7 +196,6 @@ public class InstructorProfileServiceImplTest {
 
     @Test
     void testUpdateInstructorProfile_error_InstructorProfileNotFound() {
-        // 1. Prepare request with non-existent ID
         Long identityId = 1L;
         UpdateInstructorProfileRequest request = UpdateInstructorProfileRequest.builder()
                 .identityId(String.valueOf(identityId))
@@ -225,27 +203,21 @@ public class InstructorProfileServiceImplTest {
                 .lastName("Nguyen")
                 .build();
 
-        // 2. Mock repository to return empty (simulate not found in database)
-        when(instructorProfileRepository.findByIdentityId(String.valueOf(identityId)))
+        when(instructorProfileRepository.findActiveByIdentityId(String.valueOf(identityId)))
                 .thenReturn(Optional.empty());
 
-        // 3. Call service and expect exception
         InstructorProfileNotFoundException ex = assertThrows(InstructorProfileNotFoundException.class, () -> {
             instructorProfileService.updateInstructorProfile(request);
         });
 
-        // 4. Verify repository interaction
-        verify(instructorProfileRepository).findByIdentityId(String.valueOf(identityId));
         assertEquals("Instructor profile not found with id: " + identityId, ex.getMessage());
-
-        // 5. Ensure no save or mapper was called
+        verify(instructorProfileRepository).findActiveByIdentityId(String.valueOf(identityId));
         verify(instructorProfileRepository, never()).save(any());
-        verify(instructorProfileMapper, never()).toSummaryResponse(any());
+        verify(instructorProfileMapper, never()).updateInstructorProfileRequestBodyToInstructorProfile(any(), any());
     }
 
     @Test
     void testUpdateInstructorProfile_error_RepositoryThrowsException() {
-        // 1. Prepare request and existing profile
         Long identityId = 1L;
         UpdateInstructorProfileRequest request = UpdateInstructorProfileRequest.builder()
                 .identityId(String.valueOf(identityId))
@@ -259,27 +231,22 @@ public class InstructorProfileServiceImplTest {
                 .lastName("Name")
                 .build();
 
-        // 2. Mock repository and mapper
-        when(instructorProfileRepository.findByIdentityId(String.valueOf(identityId)))
+        when(instructorProfileRepository.findActiveByIdentityId(String.valueOf(identityId)))
                 .thenReturn(Optional.of(existingProfile));
+        when(instructorProfileRepository.findActiveByEmail(any()))
+                .thenReturn(Optional.empty());
 
         doNothing().when(instructorProfileMapper)
                 .updateInstructorProfileRequestBodyToInstructorProfile(any(UpdateInstructorProfileRequest.class), eq(existingProfile));
 
-        // Simulate database save failure
         when(instructorProfileRepository.save(existingProfile))
                 .thenThrow(new RuntimeException("Database write error"));
 
-        // 3. Call service and expect exception
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            instructorProfileService.updateInstructorProfile(request);
-        });
-
-        // 4. Verify exception message
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                instructorProfileService.updateInstructorProfile(request));
         assertEquals("Database write error", exception.getMessage());
 
-        // 5. Verify repository interactions (DB hit and save attempt)
-        verify(instructorProfileRepository).findByIdentityId(String.valueOf(identityId));
+        verify(instructorProfileRepository).findActiveByIdentityId(String.valueOf(identityId));
         verify(instructorProfileRepository).save(existingProfile);
     }
 

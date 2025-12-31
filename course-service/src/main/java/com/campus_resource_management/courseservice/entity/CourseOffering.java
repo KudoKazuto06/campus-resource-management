@@ -31,6 +31,9 @@ public class CourseOffering extends BaseEntity {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @Column(name = "offering_code", nullable = false, unique = true, length = 50)
+    private String offeringCode;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "term", nullable = false)
     private AcademicTerm term;
@@ -38,11 +41,17 @@ public class CourseOffering extends BaseEntity {
     @Column(name = "year", nullable = false)
     private Integer year;
 
+    @Column(name = "section", nullable = false, length = 5)
+    private String section;
+
     @Column(name = "instructor_identity_id", nullable = false)
     private String instructorIdentityId;
 
     @Column(name = "max_students", nullable = false)
     private Integer maxStudents;
+
+    @Column(name = "description")
+    private String description;
 
     @Builder.Default
     @Column(name = "is_deleted")

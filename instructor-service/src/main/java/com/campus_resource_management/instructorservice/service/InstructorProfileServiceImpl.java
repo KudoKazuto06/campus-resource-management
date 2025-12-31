@@ -30,66 +30,60 @@ public class InstructorProfileServiceImpl implements InstructorProfileService {
     private final InstructorProfileRepository instructorProfileRepository;
 
     @Override
-    public ServiceResponse<SummaryInstructorProfileResponse>
-    addInstructorProfile(AddInstructorProfileRequest addInstructorProfileRequest) {
+    public ServiceResponse<SummaryInstructorProfileResponse> addInstructorProfile(AddInstructorProfileRequest addInstructorProfileRequest) {
 
-        if (instructorProfileRepository.findByIdentityId(addInstructorProfileRequest.getIdentityId()).isPresent()) {
+        // 1. Create entity and map (mapper might throw)
+        InstructorProfile instructorProfile = new InstructorProfile();
+        instructorProfileMapper.addInstructorProfileRequestBodyToInstructorProfile(addInstructorProfileRequest, instructorProfile);
+
+        // 2. Check uniqueness
+        if (instructorProfileRepository.findActiveByIdentityId(addInstructorProfileRequest.getIdentityId()).isPresent()) {
             throw new FieldExistedException("IdentityId already exists");
         }
 
-        if (instructorProfileRepository.findByEmail(addInstructorProfileRequest.getEmail()).isPresent()) {
+        if (instructorProfileRepository.findActiveByEmail(addInstructorProfileRequest.getEmail()).isPresent()) {
             throw new FieldExistedException("Email already exists");
         }
 
-        // 1. Create new entity and map fields from request
-        InstructorProfile instructorProfile = new InstructorProfile();
-        instructorProfileMapper.addInstructorProfileRequestBodyToInstructorProfile(
-                addInstructorProfileRequest, instructorProfile
-        );
-
-        // 2. Set dynamic / generated fields
+        // 3. Set dynamic fields
         instructorProfile.setCreatedBy("SYSTEM");
+        instructorProfile.setSchoolEmail(generateUniqueSchoolEmail(
+                addInstructorProfileRequest.getFirstName(),
+                addInstructorProfileRequest.getLastName()
+        ));
 
-        instructorProfile.setSchoolEmail(
-                generateUniqueSchoolEmail(
-                        addInstructorProfileRequest.getFirstName(),
-                        addInstructorProfileRequest.getLastName()
-                )
-        );
+        // 4. Save
+        InstructorProfile savedProfile = instructorProfileRepository.save(instructorProfile);
 
-        // 3. Save entity
-        InstructorProfile savedInstructorProfile =
-                instructorProfileRepository.save(instructorProfile);
+        // 5. Map to response
+        SummaryInstructorProfileResponse response = instructorProfileMapper.toSummaryResponse(savedProfile);
 
-        // 4. Map saved entity to response DTO
-        SummaryInstructorProfileResponse response =
-                instructorProfileMapper.toSummaryResponse(savedInstructorProfile);
-
-        // 5. Return response wrapped in ServiceResponse
+        // 6. Return
         return ServiceResponse.<SummaryInstructorProfileResponse>builder()
                 .statusCode(StatusCode.CREATED)
                 .status(StatusResponse.SUCCESS)
-                .message(MessageResponse.format(
-                        MessageResponse.ADD_INSTRUCTOR_PROFILE_SUCCESS))
+                .message(MessageResponse.format(MessageResponse.ADD_INSTRUCTOR_PROFILE_SUCCESS))
                 .data(response)
                 .build();
     }
+
+
 
     @Override
     public ServiceResponse<SummaryInstructorProfileResponse>
     updateInstructorProfile(UpdateInstructorProfileRequest updateInstructorProfileRequest) {
 
-        if (instructorProfileRepository.findByEmail(updateInstructorProfileRequest.getEmail()).isPresent()) {
-            throw new FieldExistedException("Email already exists");
-        }
-
         // 1. Find existing profile
         InstructorProfile existingProfile =
-                instructorProfileRepository.findByIdentityId(
+                instructorProfileRepository.findActiveByIdentityId(
                                 updateInstructorProfileRequest.getIdentityId())
                         .orElseThrow(() ->
                                 new InstructorProfileNotFoundException(
                                         updateInstructorProfileRequest.getIdentityId()));
+
+        if (instructorProfileRepository.findActiveByEmail(updateInstructorProfileRequest.getEmail()).isPresent()) {
+            throw new FieldExistedException("Email already exists");
+        }
 
         // 2. Map fields from request to entity
         instructorProfileMapper.updateInstructorProfileRequestBodyToInstructorProfile(
@@ -222,23 +216,42 @@ public class InstructorProfileServiceImpl implements InstructorProfileService {
     }
 
     @Override
-    public ServiceResponse<Void>
-    restoreInstructorProfile(String identityId) {
+    public ServiceResponse<Void> restoreInstructorProfile(String identityId) {
 
-        // 1. Find including soft-deleted
+        // 1. Find the profile including soft-deleted ones
         InstructorProfile instructorProfile =
                 instructorProfileRepository
                         .findByIdentityIdIncludeSoftDeleted(identityId)
                         .orElseThrow(() ->
                                 new InstructorProfileNotFoundException(identityId));
 
-        // 2. Restore
+        // 2. Check for conflicts with other active profiles (identityId)
+        boolean identityConflict = instructorProfileRepository.findByIdentityId(identityId)
+                .filter(p -> !p.getId().equals(instructorProfile.getId()))
+                .isPresent();
+
+        if (identityConflict) {
+            throw new FieldExistedException(
+                    "Cannot restore: identityId already used by another active profile");
+        }
+
+        // 3. Check for conflicts with other active profiles (email)
+        boolean emailConflict = instructorProfileRepository.findByEmail(instructorProfile.getEmail())
+                .filter(p -> !p.getId().equals(instructorProfile.getId()))
+                .isPresent();
+
+        if (emailConflict) {
+            throw new FieldExistedException(
+                    "Cannot restore: email already used by another active profile");
+        }
+
+        // 4. Restore
         instructorProfile.setIsDeleted(false);
 
-        // 3. Save
+        // 5. Save
         instructorProfileRepository.save(instructorProfile);
 
-        // 4. Return response
+        // 6. Return response
         return ServiceResponse.<Void>builder()
                 .statusCode(StatusCode.SUCCESS)
                 .status(StatusResponse.SUCCESS)
@@ -246,6 +259,7 @@ public class InstructorProfileServiceImpl implements InstructorProfileService {
                         MessageResponse.RESTORE_INSTRUCTOR_PROFILE_SUCCESS))
                 .build();
     }
+
 
     // ------------------------------------------------------------------------------------------------ //
 

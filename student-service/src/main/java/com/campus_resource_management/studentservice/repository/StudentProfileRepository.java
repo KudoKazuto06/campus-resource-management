@@ -21,4 +21,8 @@ public interface StudentProfileRepository extends JpaRepository<StudentProfile, 
 
     boolean existsBySchoolEmail(String email);
 
+    // Active profile by normal email
+    @Query("SELECT s FROM StudentProfile s WHERE s.email = :email AND s.isDeleted = false")
+    Optional<StudentProfile> findByEmail(String email);
+
 }

@@ -32,14 +32,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ServiceResponse<SummaryCourseResponse> addCourse(AddCourseRequest addCourseRequest) {
 
-        if (courseRepository.existsByCourseCodeAndIsDeletedFalse(addCourseRequest.getCourseCode())) {
-            throw new FieldExistedException(MessageResponse.COURSE_CODE_ALREADY_EXISTS);
-        }
-
         Department deptEnum = Department.valueOf(addCourseRequest.getDepartment().toUpperCase());
         String deptPrefix = departmentMapper.toShortCode(deptEnum);
         String fullCourseCode = deptPrefix + addCourseRequest.getCourseCode();
-        addCourseRequest.setCourseCode(fullCourseCode);        addCourseRequest.setCourseCode(fullCourseCode);
+
+        if (courseRepository.existsByCourseCodeAndIsDeletedFalse(fullCourseCode)) {
+            throw new FieldExistedException(MessageResponse.COURSE_CODE_ALREADY_EXISTS);
+        }
+
+        addCourseRequest.setCourseCode(fullCourseCode);
 
         Course course = courseMapper.addCourseRequestToCourse(addCourseRequest);
         course.setCreatedBy("SYSTEM");
@@ -156,7 +157,24 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findByCourseCodeIncludeDeleted(courseCode)
                 .orElseThrow(() -> new CourseNotFoundException(courseCode));
 
+        // If already active, do nothing or fail (your choice)
+        if (!Boolean.TRUE.equals(course.getIsDeleted())) {
+            return ServiceResponse.<Void>builder()
+                    .statusCode(StatusCode.SUCCESS)
+                    .status(StatusResponse.SUCCESS)
+                    .message(MessageResponse.format(MessageResponse.RESTORE_COURSE_SUCCESS))
+                    .build();
+        }
+
+        // Check if another active course already exists
+        if (courseRepository.existsByCourseCodeAndIsDeletedFalse(course.getCourseCode())) {
+            throw new FieldExistedException(
+                    MessageResponse.COURSE_CODE_ALREADY_EXISTS
+            );
+        }
+
         course.setIsDeleted(false);
+        course.setModifiedBy("SYSTEM");
         courseRepository.save(course);
 
         return ServiceResponse.<Void>builder()
@@ -165,4 +183,5 @@ public class CourseServiceImpl implements CourseService {
                 .message(MessageResponse.format(MessageResponse.RESTORE_COURSE_SUCCESS))
                 .build();
     }
+
 }

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.campus_resource_management.proto.instructor";
+option java_outer_classname = "InstructorProto";
+
+service InstructorService {
+  rpc ExistsByIdentityId (InstructorExistRequest)
+      returns (InstructorExistResponse);
+
+  rpc FilterInstructorIdentityIds (FilterInstructorRequest)
+      returns (FilterInstructorIdentityIdsResponse);
+
+  rpc GetInstructorInfoByIdentityId (InstructorInfoRequest)
+      returns (InstructorInfoResponse);
+}
+
+message InstructorExistRequest {
+  string identityId = 1;
+}
+
+message InstructorExistResponse {
+  bool exists = 1;
+}
+
+message FilterInstructorRequest {
+  string fullName = 1;
+  string academicRank = 2;
+}
+
+message FilterInstructorIdentityIdsResponse {
+  repeated string identityIds = 1;
+}
+
+message InstructorInfoRequest {
+  string identityId = 1;
+}
+
+message InstructorInfoResponse {
+  string firstName = 1;
+  string lastName = 2;
+  string email = 3;
+  string officeHour = 4;
+}

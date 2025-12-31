@@ -1,6 +1,7 @@
-package com.campus_resource_management.courseservice.service;
+package com.campus_resource_management.courseservice.course.service;
 
 import com.campus_resource_management.courseservice.constant.Department;
+import com.campus_resource_management.courseservice.constant.MessageResponse;
 import com.campus_resource_management.courseservice.constant.StatusCode;
 import com.campus_resource_management.courseservice.constant.StatusResponse;
 import com.campus_resource_management.courseservice.dto.PaginationResponse;
@@ -18,6 +19,7 @@ import com.campus_resource_management.courseservice.mapper.CourseMapper;
 import com.campus_resource_management.courseservice.mapper.DepartmentMapper;
 import com.campus_resource_management.courseservice.repository.course.CourseRepository;
 import com.campus_resource_management.courseservice.repository.course.CourseRepositoryForFilter;
+import com.campus_resource_management.courseservice.service.CourseServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,14 +85,26 @@ public class CourseServiceTest {
     }
 
     @Test
-    void testAddCourse_error_CourseCodeExists_shouldThrowFieldExistedException() {
+    void addCourse_whenCourseCodeExists_shouldThrowFieldExistedException() {
         AddCourseRequest request = new AddCourseRequest();
-        request.setCourseCode("CSC101");
+        request.setCourseCode("101");
+        request.setDepartment("COMPUTER_SCIENCE");
 
-        when(courseRepository.existsByCourseCodeAndIsDeletedFalse(anyString())).thenReturn(true);
+        when(departmentMapper.toShortCode(any(Department.class))).thenReturn("CSC");
 
-        assertThrows(FieldExistedException.class, () -> courseService.addCourse(request));
+        when(courseRepository.existsByCourseCodeAndIsDeletedFalse("CSC101")).thenReturn(true);
+
+        // Act & Assert
+        FieldExistedException exception = assertThrows(FieldExistedException.class,
+                () -> courseService.addCourse(request));
+
+        assertEquals(MessageResponse.COURSE_CODE_ALREADY_EXISTS, exception.getMessage());
+
+        // Verify interactions
+        verify(courseRepository).existsByCourseCodeAndIsDeletedFalse("CSC101");
+        verify(departmentMapper).toShortCode(any(Department.class));
     }
+
 
     @Test
     void testAddCourse_error_MapperThrowsException() {
@@ -200,12 +214,22 @@ public class CourseServiceTest {
     // -------------------- RESTORE COURSE --------------------
     @Test
     void testRestoreCourseByCourseCode_success_shouldReturnVoid() {
-        when(courseRepository.findByCourseCodeIncludeDeleted(anyString())).thenReturn(Optional.of(course));
+        // Arrange
+        Course course = new Course();
+        course.setCourseCode("CSC101");
+        course.setIsDeleted(true); // must be soft-deleted
+
+        when(courseRepository.findByCourseCodeIncludeDeleted("CSC101")).thenReturn(Optional.of(course));
+        when(courseRepository.existsByCourseCodeAndIsDeletedFalse("CSC101")).thenReturn(false);
         when(courseRepository.save(any(Course.class))).thenReturn(course);
 
-        ServiceResponse<Void> response = courseService.restoreCourseByCourseCode("CSC101");
+        // Act
+        var response = courseService.restoreCourseByCourseCode("CSC101");
 
+        // Assert
         assertEquals(StatusResponse.SUCCESS, response.getStatus());
+        verify(courseRepository).findByCourseCodeIncludeDeleted("CSC101");
+        verify(courseRepository).save(course);
     }
 
     @Test

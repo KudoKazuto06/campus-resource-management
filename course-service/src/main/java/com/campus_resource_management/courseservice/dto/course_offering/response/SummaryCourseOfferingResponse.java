@@ -9,10 +9,11 @@ import java.util.UUID;
 @Builder
 public class SummaryCourseOfferingResponse {
 
-    private UUID offeringId;
+    private String courseOfferingCode;
     private String courseCode;
-    private AcademicTerm term;
+    private String term;
     private Integer year;
+    private String section;
     private Integer maxStudents;
 
 }

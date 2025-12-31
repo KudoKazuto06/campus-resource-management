@@ -63,6 +63,29 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(InstructorNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ServiceResponse<Void> handleNotFound4(InstructorNotFoundException ex){
+        return ServiceResponse.<Void>builder()
+                .status(StatusResponse.FAILURE)
+                .statusCode(StatusCode.NOT_FOUND)
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(InvalidAcademicTermException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ServiceResponse<Void> handleInvalidAcademicTerm(
+            InvalidAcademicTermException ex) {
+
+        return ServiceResponse.<Void>builder()
+                .statusCode(StatusCode.ERROR)
+                .status(StatusResponse.FAILURE)
+                .errorMessages(Map.of("term", ex.getMessage()))
+                .functionThrow(getFunctionNameWithCustomException(ex))
+                .build();
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ServiceResponse<Void> handleValidationExceptions(MethodArgumentNotValidException ex){

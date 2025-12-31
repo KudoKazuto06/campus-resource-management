@@ -15,7 +15,7 @@ public class UpdateCourseRequest {
             regexp = "^[A-Z]{2,4}\\d{3}$",
             message = MessageResponse.COURSE_CODE_INVALID
     )
-    private String courseCode; // exact match required for update
+    private String courseCode;
 
     @Pattern(
             regexp = "COMPUTER_SCIENCE|SOFTWARE_ENGINEERING|MATHEMATICS|PHYSICS|CHEMISTRY|BIOLOGY|ECONOMICS|BUSINESS|PSYCHOLOGY|EDUCATION|HISTORY|LITERATURE|PHILOSOPHY|ENGINEERING|MEDICINE|NURSING|ART|MUSIC|LAW|SOCIOLOGY",

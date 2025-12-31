@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   course-service:
-    build: .
+    build: ../../../course-service
     container_name: course_service_app
     ports:
       - "8083:8083"

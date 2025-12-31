@@ -11,13 +11,22 @@ import java.util.UUID;
 
 public interface CourseOfferingRepository extends JpaRepository<CourseOffering, UUID> {
 
-    boolean existsByCourse_IdAndTermAndYearAndIsDeletedFalse(
+    boolean existsByCourse_IdAndTermAndYearAndSectionAndIsDeletedFalse(
             UUID courseId,
             AcademicTerm term,
-            Integer year
+            Integer year,
+            String section
     );
+
+
+    boolean existsByOfferingCodeAndIsDeletedFalse(String offeringCode);
 
     Optional<CourseOffering> findByIdAndIsDeletedFalse(UUID offeringId);
 
+    Optional<CourseOffering> findByOfferingCodeAndIsDeletedFalse(String offeringCode);
+
+    Optional<CourseOffering> findByOfferingCodeAndIsDeletedTrue(String offeringCode);
+
     List<CourseOffering> findAllByCourse_IdAndIsDeletedFalse(UUID courseId);
+
 }

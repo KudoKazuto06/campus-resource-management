@@ -19,6 +19,9 @@ public class FilterCourseOfferingRequest {
     @Builder.Default
     private Integer size = 10;
 
+    @Size(max = 100, message = MessageResponse.COURSE_OFFERING_CODE_MAX_LENGTH)
+    private String courseOfferingCode;
+
     /* ================= Course ================= */
     @Size(max = 20, message = MessageResponse.COURSE_CODE_MAX_LENGTH)
     private String courseCode;
@@ -47,12 +50,6 @@ public class FilterCourseOfferingRequest {
     /* ================= Instructor ================= */
     @Size(max = 100, message = MessageResponse.INSTRUCTOR_NAME_MAX_LENGTH)
     private String instructorName;
-
-    @Pattern(
-            regexp = "COMPUTER_SCIENCE|SOFTWARE_ENGINEERING|MATHEMATICS|PHYSICS|CHEMISTRY|BIOLOGY|ECONOMICS|BUSINESS|PSYCHOLOGY|EDUCATION|HISTORY|LITERATURE|PHILOSOPHY|ENGINEERING|MEDICINE|NURSING|ART|MUSIC|LAW|SOCIOLOGY",
-            message = MessageResponse.DEPARTMENT_TYPE_INVALID
-    )
-    private String instructorDepartment;
 
     @Pattern(
             regexp = "LECTURER|ASSISTANT_PROFESSOR|ASSOCIATE_PROFESSOR|PROFESSOR|GENERAL_STAFF",

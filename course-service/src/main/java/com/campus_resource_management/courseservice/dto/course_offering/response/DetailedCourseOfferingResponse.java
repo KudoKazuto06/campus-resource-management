@@ -9,10 +9,15 @@ import java.util.UUID;
 @Builder
 public class DetailedCourseOfferingResponse {
 
+    /* ================= General ====================== */
+    private String courseOfferingCode;
     private String courseCode;
     private String courseName;
     private AcademicTerm term;
     private Integer year;
+    private String section;
+
+    /* ================= Instructor Info ================= */
     private String instructorName;
     private String instructorEmail;
     private String instructorOfficeHour;

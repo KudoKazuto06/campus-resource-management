@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   instructor-service:
-    build: .
+    build: ../../../instructor-service
     container_name: instructor_service_app
     ports:
       - "8081:8080"

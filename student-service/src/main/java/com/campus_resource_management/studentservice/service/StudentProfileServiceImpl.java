@@ -10,6 +10,7 @@ import com.campus_resource_management.studentservice.dto.student_profile.respons
 import com.campus_resource_management.studentservice.dto.student_profile.response.FilterStudentProfileResponse;
 import com.campus_resource_management.studentservice.dto.student_profile.response.SummaryStudentProfileResponse;
 import com.campus_resource_management.studentservice.entity.StudentProfile;
+import com.campus_resource_management.studentservice.exception.FieldExistedException;
 import com.campus_resource_management.studentservice.exception.ListEmptyException;
 import com.campus_resource_management.studentservice.exception.StudentProfileNotFoundException;
 import com.campus_resource_management.studentservice.mapper.StudentProfileMapper;
@@ -35,26 +36,34 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     public ServiceResponse<SummaryStudentProfileResponse>
     addStudentProfile(AddStudentProfileRequest addStudentProfileRequest) {
 
-        // 1. Create new entity and map fields from request
+        // 1. Create new entity and map fields from request (mapper might throw)
         StudentProfile studentProfile = new StudentProfile();
         studentProfileMapper.addStudentProfileRequestBodyToStudentProfile(addStudentProfileRequest, studentProfile);
 
-        // 2. Set dynamic / generated fields
-        studentProfile.setSchoolEmail(
-                generateUniqueSchoolEmail(
-                        addStudentProfileRequest.getFirstName(),
-                        addStudentProfileRequest.getLastName()
-                )
-        );
+        // 2. Check uniqueness of identityId and email among active profiles
+        if (studentProfileRepository.findByIdentityId(addStudentProfileRequest.getIdentityId()).isPresent()) {
+            throw new FieldExistedException("IdentityId already exists");
+        }
+
+        if (addStudentProfileRequest.getEmail() != null &&
+                studentProfileRepository.findByEmail(addStudentProfileRequest.getEmail()).isPresent()) {
+            throw new FieldExistedException("Email already exists");
+        }
+
+        // 3. Set dynamic/generated fields
+        studentProfile.setSchoolEmail(generateUniqueSchoolEmail(
+                addStudentProfileRequest.getFirstName(),
+                addStudentProfileRequest.getLastName()
+        ));
         studentProfile.setCreatedBy("SYSTEM");
 
-        // 3. Save entity
+        // 4. Save entity
         StudentProfile savedStudentProfile = studentProfileRepository.save(studentProfile);
 
-        // 4. Map saved entity to response DTO
+        // 5. Map saved entity to response DTO
         SummaryStudentProfileResponse summaryStudentProfileResponse = studentProfileMapper.toSummaryResponse(savedStudentProfile);
 
-        // 5. Return response wrapped in ServiceResponse
+        // 6. Return response wrapped in ServiceResponse
         return ServiceResponse.<SummaryStudentProfileResponse>builder()
                 .statusCode(StatusCode.CREATED)
                 .status(StatusResponse.SUCCESS)
@@ -71,17 +80,27 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         StudentProfile existingProfile = studentProfileRepository.findByIdentityId(updateStudentProfileRequest.getIdentityId())
                 .orElseThrow(() -> new StudentProfileNotFoundException(updateStudentProfileRequest.getIdentityId()));
 
-        // 2. Map fields from request to entity (only update provided fields)
+        // 2. Check uniqueness of email among active profiles (excluding current profile)
+        if (updateStudentProfileRequest.getEmail() != null) {
+            boolean emailConflict = studentProfileRepository.findByEmail(updateStudentProfileRequest.getEmail())
+                    .filter(s -> !s.getId().equals(existingProfile.getId()))
+                    .isPresent();
+            if (emailConflict) {
+                throw new FieldExistedException("Email already exists");
+            }
+        }
+
+        // 3. Map fields from request to entity (only update provided fields)
         studentProfileMapper.updateStudentProfileRequestBodyToStudentProfile(updateStudentProfileRequest, existingProfile);
         existingProfile.setModifiedBy("SYSTEM");
 
-        // 3. Save updated profile
+        // 4. Save updated profile
         StudentProfile savedStudentProfile = studentProfileRepository.save(existingProfile);
 
-        // 4. Map entity to summary response
+        // 5. Map entity to summary response
         SummaryStudentProfileResponse summaryStudentProfileResponse = studentProfileMapper.toSummaryResponse(savedStudentProfile);
 
-        // 5. Return wrapped ServiceResponse
+        // 6. Return wrapped ServiceResponse
         return ServiceResponse.<SummaryStudentProfileResponse>builder()
                 .statusCode(StatusCode.SUCCESS)
                 .status(StatusResponse.SUCCESS)
@@ -183,27 +202,46 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     }
 
     @Override
-    public ServiceResponse<Void>
-    restoreStudentProfile(String identityId) {
+    public ServiceResponse<Void> restoreStudentProfile(String identityId) {
 
-        // 1. Find existing profile
+        // 1. Find the profile including soft-deleted ones
         StudentProfile studentProfile = studentProfileRepository.findByIdentityIdIncludeSoftDeleted(identityId)
                 .orElseThrow(() -> new StudentProfileNotFoundException(identityId));
 
-        // 2. Soft-delete the Student Profile
+        // 2. Check for conflicts with other active profiles (identityId)
+        boolean identityConflict = studentProfileRepository.findByIdentityId(identityId)
+                .filter(s -> !s.getId().equals(studentProfile.getId()))
+                .isPresent();
+
+        if (identityConflict) {
+            throw new RuntimeException(
+                    "Cannot restore: identityId already used by another active student profile");
+        }
+
+        // 3. Check for conflicts with other active profiles (email)
+        boolean emailConflict = studentProfileRepository.findBySchoolEmail(studentProfile.getSchoolEmail())
+                .filter(s -> !s.getId().equals(studentProfile.getId()))
+                .isPresent();
+
+        if (emailConflict) {
+            throw new RuntimeException(
+                    "Cannot restore: email already used by another active student profile");
+        }
+
+        // 4. Restore
         studentProfile.setIsDeleted(false);
 
-        // 3. Save updated profile
+        // 5. Save
         studentProfileRepository.save(studentProfile);
 
-        // 4. Return wrapped ServiceResponse
+        // 6. Return response
         return ServiceResponse.<Void>builder()
                 .statusCode(StatusCode.SUCCESS)
                 .status(StatusResponse.SUCCESS)
                 .message(MessageResponse.format(MessageResponse.RESTORE_STUDENT_PROFILE_SUCCESS))
                 .build();
-
     }
+
 
     // ------------------------------------------------------------------------------------------------ //
 

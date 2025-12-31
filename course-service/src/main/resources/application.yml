@@ -1,6 +1,11 @@
 server:
   port: 8083
 
+grpc:
+  instructor-service:
+    host: instructor-service
+    port: 9090
+
 spring:
   datasource:
     url: jdbc:postgresql://course-postgres:5432/course_db

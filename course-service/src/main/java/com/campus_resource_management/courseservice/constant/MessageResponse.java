@@ -15,6 +15,18 @@ public class MessageResponse{
             DELETE_COURSE_SUCCESS = "Delete Course Successfully";
     public static final String
             RESTORE_COURSE_SUCCESS = "Restore Course Successfully";
+    public static final String
+            ADD_COURSE_OFFERING_SUCCESS = "Add Course Offering Successfully";
+    public static final String
+            UPDATE_COURSE_OFFERING_SUCCESS = "Update Course Offering Successfully";
+    public static final String
+            VIEW_ALL_COURSE_OFFERINGS_SUCCESS =  "View All Offerings Successfully";
+    public static final String
+            VIEW_DETAIL_COURSE_OFFERING_SUCCESS = "View Course Offerings Successfully";
+    public static final String
+            DELETE_COURSE_OFFERING_SUCCESS = "Delete Course Offering Successfully";
+    public static final String
+            RESTORE_COURSE_OFFERING_SUCCESS = "Restore Course Offering Successfully";
 
     // VALIDATION
     public static final String
@@ -53,6 +65,8 @@ public class MessageResponse{
             MAX_STUDENTS_MAX_VALUE =  "Max Student Must be Smaller Than [1000]";
     public static final String
             CREDIT_FROM_GREATER_THAN_TO = "Credit From Greater Than To";
+    public static final String
+            COURSE_OFFERING_CODE_MAX_LENGTH = "Course Offering Code Maximum Length [100]";
 
     // REQUIRED
     public static final String
@@ -68,7 +82,9 @@ public class MessageResponse{
     public static final String
             MAX_STUDENTS_IS_REQUIRED = "Max Students is required";
     public static final String
-            COURSE_OFFERING_ID_IS_REQUIRED = "Course Offer Id is required";
+            COURSE_OFFERING_CODE_IS_REQUIRED = "Course Offer Code is required";
+    public static final String
+            SECTION_IS_REQUIRED = "Section is required";
 
     // NOT FOUND
     public static final String
@@ -77,6 +93,8 @@ public class MessageResponse{
     // EXISTED
     public static final String
             COURSE_CODE_ALREADY_EXISTS = "Course Code Already Exists";
+    public static final String
+            COURSE_OFFERING_ALREADY_EXISTS = "Course Offering Already Exists";
 
     // INSTRUCTOR-SERVICE
     public static final String
@@ -87,6 +105,8 @@ public class MessageResponse{
             INSTRUCTOR_NAME_MAX_LENGTH = "Instructor Name Max Length [100]";
     public static final String
             ACADEMIC_RANK_TYPE_INVALID = "Academic Rank Invalid";
+    public static final String
+            SECTION_MAX_LENGTH = "Section Max Length [20]";
 
     public static String format(String message){
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();

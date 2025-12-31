@@ -1,9 +1,9 @@
-package com.campus_resource_management.courseservice.controller;
+package com.campus_resource_management.courseservice.course.controller;
 
+import com.campus_resource_management.courseservice.controller.CourseController;
 import com.campus_resource_management.courseservice.dto.PaginationResponse;
 import com.campus_resource_management.courseservice.dto.ServiceResponse;
 import com.campus_resource_management.courseservice.dto.course.request.AddCourseRequest;
-import com.campus_resource_management.courseservice.dto.course.request.FilterCourseRequest;
 import com.campus_resource_management.courseservice.dto.course.request.UpdateCourseRequest;
 import com.campus_resource_management.courseservice.dto.course.response.DetailedCourseResponse;
 import com.campus_resource_management.courseservice.dto.course.response.SummaryCourseResponse;
@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
@@ -34,14 +33,13 @@ class CourseControllerTest {
     @Mock
     private CourseService courseService;
 
-    @InjectMocks
-    private CourseController courseController;
-
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
+    private CourseController courseController;
 
     @BeforeEach
     void setUp() {
+        courseController = new CourseController(courseService);
         mockMvc = MockMvcBuilders.standaloneSetup(courseController).build();
         objectMapper = new ObjectMapper();
     }

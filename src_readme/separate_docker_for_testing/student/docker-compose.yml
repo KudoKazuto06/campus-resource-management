@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   student-service:
-    build: .
+    build: ../../../student-service
     container_name: student_service_app
     ports:
       - "8080:8080"

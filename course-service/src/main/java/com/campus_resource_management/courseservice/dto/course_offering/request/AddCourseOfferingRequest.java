@@ -27,6 +27,10 @@ public class AddCourseOfferingRequest {
     @Max(value = 2100, message = MessageResponse.ACADEMIC_YEAR_MAX_VALUE)
     private Integer year;
 
+    @NotBlank(message = MessageResponse.SECTION_IS_REQUIRED)
+    @Size(max = 20, message = MessageResponse.SECTION_MAX_LENGTH)
+    private String section;
+
     @NotBlank(message = MessageResponse.INSTRUCTOR_IDENTITY_ID_IS_REQUIRED)
     @Size(min = 12, max = 12, message = MessageResponse.INSTRUCTOR_IDENTITY_ID_INVALID_LENGTH)
     private String instructorIdentityId;
@@ -35,4 +39,8 @@ public class AddCourseOfferingRequest {
     @Min(value = 1, message = MessageResponse.MAX_STUDENTS_MIN_VALUE)
     @Max(value = 1000, message = MessageResponse.MAX_STUDENTS_MAX_VALUE)
     private Integer maxStudents;
+
+    @Size(max = 1000, message = MessageResponse.COURSE_DESCRIPTION_MAX_LENGTH)
+    private String description;
+
 }
