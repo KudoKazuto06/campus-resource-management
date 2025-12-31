@@ -73,6 +73,16 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(StudentNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ServiceResponse<Void> handleNotFound5(StudentNotFoundException ex){
+        return ServiceResponse.<Void>builder()
+                .status(StatusResponse.FAILURE)
+                .statusCode(StatusCode.NOT_FOUND)
+                .message(ex.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(InvalidAcademicTermException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ServiceResponse<Void> handleInvalidAcademicTerm(

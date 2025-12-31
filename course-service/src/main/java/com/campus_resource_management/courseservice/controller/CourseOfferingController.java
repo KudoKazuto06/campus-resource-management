@@ -48,7 +48,6 @@ public class CourseOfferingController {
         return courseOfferingService.viewDetailedCourseOfferingByCode(courseOfferingCode);
     }
 
-
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
     public ServiceResponse<Void> deleteCourseOffering(@RequestParam String courseOfferingCode) {

@@ -19,50 +19,41 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
                     primaryKeyName: pk_courses
-
               - column:
                   name: created_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
-
               - column:
                   name: created_by
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-
               - column:
                   name: modified_at
                   type: timestamp
-
               - column:
                   name: modified_by
                   type: VARCHAR(255)
-
               - column:
                   name: course_code
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-
               - column:
                   name: course_name
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-
               - column:
                   name: credit
                   type: double precision
                   constraints:
                     nullable: false
-
               - column:
                   name: description
                   type: VARCHAR(255)
-
               - column:
                   name: is_deleted
                   type: BOOLEAN
@@ -96,74 +87,61 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
                     primaryKeyName: pk_course_offerings
-
               - column:
                   name: created_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
-
               - column:
                   name: created_by
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-
               - column:
                   name: modified_at
                   type: timestamp
-
               - column:
                   name: modified_by
                   type: VARCHAR(255)
-
               - column:
                   name: course_id
                   type: UUID
                   constraints:
                     nullable: false
-
               - column:
                   name: offering_code
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
-
               - column:
                   name: term
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
-
               - column:
                   name: year
                   type: INT
                   constraints:
                     nullable: false
-
               - column:
                   name: section
-                  type: VARCHAR(50)
+                  type: VARCHAR(100)
                   constraints:
                     nullable: false
-
               - column:
                   name: instructor_identity_id
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-
               - column:
                   name: max_students
                   type: INT
                   constraints:
                     nullable: false
-
               - column:
                   name: description
                   type: VARCHAR(255)
-
               - column:
                   name: is_deleted
                   type: BOOLEAN
@@ -190,6 +168,16 @@ databaseChangeLog:
             columnNames: course_id, term, year, section
             constraintName: uc_course_offerings_course_term_year_section
 
+  - changeSet:
+      id: 1755103900300-9
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            tableName: course_offerings
+            columnNames: offering_code
+            constraintName: uc_course_offerings_offering_code
+
   # --------------------------------------------------
   # 3. COURSE ENROLLMENTS
   # --------------------------------------------------
@@ -209,57 +197,44 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
                     primaryKeyName: pk_course_enrollments
-
               - column:
-                  name: offering_id
-                  type: UUID
+                  name: offering_code
+                  type: VARCHAR(50)
                   constraints:
                     nullable: false
-
               - column:
                   name: student_identity_id
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-
               - column:
                   name: enrolled_at
                   type: date
                   constraints:
                     nullable: false
-
               - column:
                   name: is_withdrawn
                   type: BOOLEAN
+              - column:
+                  name: withdrawn_at
+                  type: date
+              - column:
+                  name: final_grade
+                  type: double precision
+              - column:
+                  name: letter_grade
+                  type: VARCHAR(50)
+              - column:
+                  name: grade_status
+                  type: VARCHAR(50)
+                  defaultValue: 'NOT_GRADED'
 
   - changeSet:
       id: 1755103900300-7
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
-        - addForeignKeyConstraint:
-            baseTableName: course_enrollments
-            baseColumnNames: offering_id
-            referencedTableName: course_offerings
-            referencedColumnNames: offering_id
-            constraintName: fk_course_enrollments_offering
-
-  - changeSet:
-      id: 1755103900300-8
-      author: tomng
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
         - addUniqueConstraint:
             tableName: course_enrollments
-            columnNames: offering_id, student_identity_id
+            columnNames: offering_code, student_identity_id
             constraintName: uc_course_enrollments_offering_student
-
-  - changeSet:
-      id: 1755103900300-9
-      author: tomng
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addUniqueConstraint:
-            tableName: course_offerings
-            columnNames: offering_code
-            constraintName: uc_course_offerings_offering_code

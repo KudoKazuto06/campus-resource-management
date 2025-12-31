@@ -119,13 +119,17 @@
 			<version>${protobuf.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>com.campus_resource_management</groupId>
 			<artifactId>instructor-proto</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.campus_resource_management</groupId>
+			<artifactId>student-proto</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 

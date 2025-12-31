@@ -22,11 +22,25 @@ public class MessageResponse{
     public static final String
             VIEW_ALL_COURSE_OFFERINGS_SUCCESS =  "View All Offerings Successfully";
     public static final String
-            VIEW_DETAIL_COURSE_OFFERING_SUCCESS = "View Course Offerings Successfully";
+            VIEW_DETAIL_COURSE_OFFERING_SUCCESS = "View Course Offering Successfully";
     public static final String
             DELETE_COURSE_OFFERING_SUCCESS = "Delete Course Offering Successfully";
     public static final String
             RESTORE_COURSE_OFFERING_SUCCESS = "Restore Course Offering Successfully";
+    public static final String
+            ADD_COURSE_ENROLLMENT_SUCCESS = "Add Course Enrollment Successfully";
+    public static final String
+            UPDATE_COURSE_ENROLLMENT_SUCCESS = "Update Course Enrollment Successfully";
+    public static final String
+            VIEW_ALL_COURSE_ENROLLMENTS_SUCCESS =  "View All Enrollments Successfully";
+    public static final String
+            VIEW_DETAIL_COURSE_ENROLLMENT_SUCCESS = "View Course Enrollment Successfully";
+    public static final String
+            DELETE_COURSE_ENROLLMENT_SUCCESS = "Delete Course Enrollment Successfully";
+    public static final String
+            RESTORE_COURSE_ENROLLMENT_SUCCESS = "Restore Course Enrollment Successfully";
+    public static final String
+            WITHDRAW_COURSE_ENROLLMENT_SUCCESS = "Withdraw Course Enrollment Successfully";
 
     // VALIDATION
     public static final String
@@ -67,6 +81,10 @@ public class MessageResponse{
             CREDIT_FROM_GREATER_THAN_TO = "Credit From Greater Than To";
     public static final String
             COURSE_OFFERING_CODE_MAX_LENGTH = "Course Offering Code Maximum Length [100]";
+    public static final String
+            ACADEMIC_RANK_TYPE_INVALID = "Academic Rank Invalid";
+    public static final String
+            SECTION_MAX_LENGTH = "Section Max Length [20]";
 
     // REQUIRED
     public static final String
@@ -85,6 +103,16 @@ public class MessageResponse{
             COURSE_OFFERING_CODE_IS_REQUIRED = "Course Offer Code is required";
     public static final String
             SECTION_IS_REQUIRED = "Section is required";
+    public static final String
+            STUDENT_IDENTITY_ID_IS_REQUIRED = "Student Identity Id is required";
+    public static final String
+            ENROLLMENT_ID_IS_REQUIRED = "Enrollment Id is required";
+    public static final String
+            FINAL_GRADE_MIN_VALUE =  "Final Grade Must Not Be Below [0]";
+    public static final String
+            FINAL_GRADE_MAX_VALUE =  "Final Grade Must Not Exceed [100]";
+    public static final String
+            LETTER_GRADE_INVALID = "Letter Grade Invalid";
 
     // NOT FOUND
     public static final String
@@ -95,6 +123,8 @@ public class MessageResponse{
             COURSE_CODE_ALREADY_EXISTS = "Course Code Already Exists";
     public static final String
             COURSE_OFFERING_ALREADY_EXISTS = "Course Offering Already Exists";
+    public static final String
+            COURSE_ENROLLMENT_ALREADY_EXISTS = "Course Enrollment Already Exists";
 
     // INSTRUCTOR-SERVICE
     public static final String
@@ -103,10 +133,12 @@ public class MessageResponse{
             INSTRUCTOR_IDENTITY_ID_INVALID_LENGTH = "Instructor Identity Id Should be of Length [12]";
     public static final String
             INSTRUCTOR_NAME_MAX_LENGTH = "Instructor Name Max Length [100]";
+
+    // STUDENT-SERVICE
     public static final String
-            ACADEMIC_RANK_TYPE_INVALID = "Academic Rank Invalid";
+            STUDENT_IDENTITY_ID_INVALID_LENGTH =  "Student Identity Id Should be of Length [12]";
     public static final String
-            SECTION_MAX_LENGTH = "Section Max Length [20]";
+            STUDENT_NAME_MAX_LENGTH = "Student Name Max Length [100]";
 
     public static String format(String message){
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();

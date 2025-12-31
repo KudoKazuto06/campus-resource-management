@@ -111,7 +111,6 @@ public class CourseOfferingRepositoryForFilterImpl implements CourseOfferingRepo
             if (!instructorIds.isEmpty()) {
                 predicates.add(root.get("instructorId").in(instructorIds));
             } else {
-                // No matching instructors → return empty
                 predicates.add(cb.disjunction());
             }
         }
