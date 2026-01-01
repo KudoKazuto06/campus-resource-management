@@ -14,7 +14,7 @@ public class InstructorGrpcConfig {
     public InstructorServiceGrpc.InstructorServiceBlockingStub
     instructorServiceStub(
             @Value("${grpc.instructor-service.host}") String host,
-            @Value("${grpc.instructor-service.port}") int port) {
+            @Value("${grpc.instructor-service.port}") int  port) {
 
         ManagedChannel channel =
                 ManagedChannelBuilder

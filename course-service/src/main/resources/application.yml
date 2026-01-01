@@ -6,6 +6,10 @@ grpc:
     host: instructor-service
     port: 9090
 
+  student-service:
+    host: student-service
+    port: 9091
+
 spring:
   datasource:
     url: jdbc:postgresql://course-postgres:5432/course_db

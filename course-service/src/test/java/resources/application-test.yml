@@ -11,6 +11,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
 
   liquibase:
     enabled: false
+
+grpc:
+  student-service:
+    host: localhost
+    port: 6565
+
+  instructor-service:
+    host: localhost
+    port: 6566
+
