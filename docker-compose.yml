@@ -15,10 +15,11 @@ services:
       - course-postgres
       - instructor-service
       - student-service
+    networks:
+      - campus_net
 
   course-postgres:
     image: postgres:15
-    platform: linux/amd64
     container_name: course_postgres
     environment:
       POSTGRES_USER: course_user
@@ -28,6 +29,8 @@ services:
       - "5434:5432"
     volumes:
       - course_pg_data:/var/lib/postgresql/data
+    networks:
+      - campus_net
 
   # =========================
   # INSTRUCTOR SERVICE
@@ -43,10 +46,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: instructor_pass
     depends_on:
       - instructor-postgres
+    networks:
+      - campus_net
 
   instructor-postgres:
     image: postgres:15
-    platform: linux/amd64
     container_name: instructor_postgres
     environment:
       POSTGRES_USER: instructor_user
@@ -56,6 +60,8 @@ services:
       - "5433:5432"
     volumes:
       - instructor_pg_data:/var/lib/postgresql/data
+    networks:
+      - campus_net
 
   # =========================
   # STUDENT SERVICE
@@ -71,10 +77,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: student_pass
     depends_on:
       - student-postgres
+    networks:
+      - campus_net
 
   student-postgres:
     image: postgres:15
-    platform: linux/amd64
     container_name: student_postgres
     environment:
       POSTGRES_USER: student_user
@@ -84,6 +91,8 @@ services:
       - "5432:5432"
     volumes:
       - student_pg_data:/var/lib/postgresql/data
+    networks:
+      - campus_net
 
 # =========================
 # VOLUMES
@@ -92,3 +101,10 @@ volumes:
   course_pg_data:
   instructor_pg_data:
   student_pg_data:
+
+# =========================
+# NETWORKS
+# =========================
+networks:
+  campus_net:
+    driver: bridge

@@ -336,7 +336,6 @@ public class CourseServiceTest {
         assertThrows(CourseNotFoundException.class, () -> courseService.restoreCourseByCourseCode("CSC999"));
     }
 
-
     // ===================== SUCCESS =====================
     @Test
     void addCourseOffering_success_shouldReturnSummaryResponse() {
@@ -346,11 +345,6 @@ public class CourseServiceTest {
 
         when(instructorGrpcClient.existsByIdentityId(anyString()))
                 .thenReturn(true);
-
-        when(courseOfferingRepository
-                .existsByCourse_IdAndTermAndYearAndSectionAndIsDeletedFalse(
-                        any(), any(), any(), any()))
-                .thenReturn(false);
 
         when(courseOfferingRepository.existsByOfferingCodeAndIsDeletedFalse(anyString()))
                 .thenReturn(false);
@@ -419,32 +413,6 @@ public class CourseServiceTest {
         );
     }
 
-    // ===================== DUPLICATE OFFERING =====================
-    @Test
-    void addCourseOffering_duplicateOffering_shouldThrowException() {
-
-        when(courseRepository.findByCourseCodeAndIsDeletedFalse(anyString()))
-                .thenReturn(Optional.of(course));
-
-        when(instructorGrpcClient.existsByIdentityId(anyString()))
-                .thenReturn(true);
-
-        when(courseOfferingRepository
-                .existsByCourse_IdAndTermAndYearAndSectionAndIsDeletedFalse(
-                        any(), any(), any(), any()))
-                .thenReturn(true);
-
-        FieldExistedException ex = assertThrows(
-                FieldExistedException.class,
-                () -> courseOfferingService.addCourseOffering(addCourseOfferingRequest)
-        );
-
-        assertEquals(
-                MessageResponse.COURSE_OFFERING_ALREADY_EXISTS,
-                ex.getMessage()
-        );
-    }
-
     // ===================== DUPLICATE OFFERING CODE =====================
     @Test
     void addCourseOffering_duplicateOfferingCode_shouldThrowException() {
@@ -455,17 +423,18 @@ public class CourseServiceTest {
         when(instructorGrpcClient.existsByIdentityId(anyString()))
                 .thenReturn(true);
 
-        when(courseOfferingRepository
-                .existsByCourse_IdAndTermAndYearAndSectionAndIsDeletedFalse(
-                        any(), any(), any(), any()))
-                .thenReturn(false);
-
+        // ONLY duplicate check now
         when(courseOfferingRepository.existsByOfferingCodeAndIsDeletedFalse(anyString()))
                 .thenReturn(true);
 
-        assertThrows(
+        FieldExistedException ex = assertThrows(
                 FieldExistedException.class,
                 () -> courseOfferingService.addCourseOffering(addCourseOfferingRequest)
+        );
+
+        assertEquals(
+                MessageResponse.COURSE_OFFERING_ALREADY_EXISTS,
+                ex.getMessage()
         );
     }
 
@@ -1122,21 +1091,30 @@ public class CourseServiceTest {
 
     // ===================== DUPLICATE ENROLLMENT =====================
     @Test
-    void addCourseEnrollment_duplicateEnrollment_throwException() {
+    void addCourseEnrollment_duplicateEnrollment_throwFieldExistedException() {
+        // Mock course offering exists
         when(courseOfferingRepository.findByOfferingCodeAndIsDeletedFalse(any()))
                 .thenReturn(Optional.of(offering));
+
+        // Mock student exists via gRPC
         when(studentGrpcClient.existsByIdentityId(any()))
                 .thenReturn(true);
+
+        // Mock duplicate enrollment exists
         when(courseEnrollmentRepository
                 .existsByOfferingCodeAndStudentIdentityIdAndIsWithdrawnFalse(any(), any()))
                 .thenReturn(true);
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        // Expect FieldExistedException instead of IllegalArgumentException
+        FieldExistedException exception = assertThrows(
+                FieldExistedException.class,
                 () -> courseEnrollmentService.addCourseEnrollment(addCourseEnrollmentRequest)
         );
 
+        // Assert message
         assertEquals(MessageResponse.COURSE_ENROLLMENT_ALREADY_EXISTS, exception.getMessage());
+
+        // Verify save is never called
         verify(courseEnrollmentRepository, never()).save(any());
     }
 

@@ -14,6 +14,7 @@ import com.campus_resource_management.courseservice.entity.CourseEnrollment;
 import com.campus_resource_management.courseservice.entity.CourseOffering;
 import com.campus_resource_management.courseservice.exception.CourseEnrollmentNotFoundException;
 import com.campus_resource_management.courseservice.exception.CourseOfferingNotFoundException;
+import com.campus_resource_management.courseservice.exception.FieldExistedException;
 import com.campus_resource_management.courseservice.exception.StudentNotFoundException;
 import com.campus_resource_management.courseservice.grpc.StudentGrpcClient;
 import com.campus_resource_management.courseservice.grpc.dto.StudentInfo;
@@ -60,7 +61,7 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
                 );
 
         if (exists) {
-            throw new IllegalArgumentException(MessageResponse.COURSE_ENROLLMENT_ALREADY_EXISTS);
+            throw new FieldExistedException(MessageResponse.COURSE_ENROLLMENT_ALREADY_EXISTS);
         }
 
         // 4. Create enrollment using mapper with CourseOffering

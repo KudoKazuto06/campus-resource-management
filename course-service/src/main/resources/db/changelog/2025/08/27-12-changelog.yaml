@@ -169,6 +169,15 @@ databaseChangeLog:
             constraintName: uc_course_offerings_course_term_year_section
 
   - changeSet:
+      id: 1755103900300-10
+      author: tomng
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropUniqueConstraint:
+            tableName: course_offerings
+            constraintName: uc_course_offerings_course_term_year_section
+
+  - changeSet:
       id: 1755103900300-9
       author: tomng
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS

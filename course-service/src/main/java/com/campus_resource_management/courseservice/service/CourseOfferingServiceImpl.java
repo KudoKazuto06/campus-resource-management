@@ -74,21 +74,6 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
             throw new InvalidAcademicTermException("Invalid academic term: " + request.getTerm());
         }
 
-        /* ================= Guard 4: Duplicate offering ================= */
-        boolean exists = courseOfferingRepository
-                .existsByCourse_IdAndTermAndYearAndSectionAndIsDeletedFalse(
-                        course.getId(),
-                        term,
-                        request.getYear(),
-                        request.getSection()
-                );
-
-        if (exists) {
-            throw new FieldExistedException(
-                    MessageResponse.COURSE_OFFERING_ALREADY_EXISTS
-            );
-        }
-
         /* ================= Generate offering code ================= */
         String offeringCode = generateOfferingCode(
                 course.getCourseCode(),
@@ -107,6 +92,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
         CourseOffering offering =
                 courseOfferingMapper.addRequestToEntity(request, course);
 
+        offering.setOfferingCode(offeringCode);
         offering.setCreatedBy("SYSTEM");
 
         CourseOffering saved = courseOfferingRepository.save(offering);

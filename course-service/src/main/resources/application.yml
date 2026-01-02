@@ -8,7 +8,7 @@ grpc:
 
   student-service:
     host: student-service
-    port: 9091
+    port: 9090
 
 spring:
   datasource:

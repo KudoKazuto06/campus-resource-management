@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "course_offerings",
        uniqueConstraints = {
-           @UniqueConstraint(columnNames = {"course_id", "term", "year"})
+           @UniqueConstraint(columnNames = {"offering_code"})
        })
 @Getter
 @Setter

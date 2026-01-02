@@ -117,6 +117,8 @@ public class MessageResponse{
     // NOT FOUND
     public static final String
             NO_DATA = "No data found";
+    public static final String
+            COURSE_OFFERING_NOT_FOUND = "Course Offer Not Found";
 
     // EXISTED
     public static final String
